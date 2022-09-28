@@ -1,11 +1,11 @@
 <script>
 export default {
-  name: 'PagesIndex',
+  name: 'PagesCategory',
 }
 </script>
 
 <template>
   <div>
-    <h1>index</h1>
+    <h1>category</h1>
   </div>
 </template>
