@@ -1,7 +1,5 @@
-<script>
-export default {
-  name: 'PagesIndex',
-}
+<script setup lang="ts">
+
 </script>
 
 <template>
