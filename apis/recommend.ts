@@ -13,15 +13,19 @@ const RECOMMENDS = [
       '/images/pic3.jpg',
       '/images/pic4.jpg',
     ],
+    categoryId: 101,
+    createdAt: '2022/10/1',
   },
   {
     id: 2,
     title: 'タイトル2タイトル2タイトル2タイトル2タイトル2タイトル2',
     userId: 1,
-    likes: [1, 2],
+    likes: [1, 2, 1, 2, 1, 2, 1, 2, 1, 2],
     detail:
       '詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2',
     images: ['/images/pic5.jpg', '/images/pic6.jpg'],
+    categoryId: 102,
+    createdAt: '2022/10/5',
   },
   {
     id: 3,
@@ -30,6 +34,8 @@ const RECOMMENDS = [
     likes: [1, 2],
     detail: '詳細3詳細3',
     images: ['/images/pic7.jpg'],
+    categoryId: 108,
+    createdAt: '2022/10/8',
   },
   {
     id: 4,
@@ -38,6 +44,8 @@ const RECOMMENDS = [
     likes: [1, 2, 3, 4],
     detail: '詳細4詳細4',
     images: [],
+    categoryId: 109,
+    createdAt: '2022/9/27',
   },
 ]
 
