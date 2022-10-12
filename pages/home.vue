@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { reactive, ref, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { Recommend, Category, Sort } from '~/types/index'
 import { useRecommend } from '~/apis/recommend'
+import { useRoute, useRouter } from '#imports'
 import dayjs from 'dayjs'
 
 const CATEGORIES: Readonly<Category[]> = [
@@ -21,7 +22,11 @@ const CATEGORIES: Readonly<Category[]> = [
 const SORTS: Readonly<Sort[]> = [
   { text: '新着順', id: 201 },
   { text: 'いいね数', id: 202 },
+  // { text: 'おすすめ', id: 203 },
 ] as const
+
+const route = useRoute()
+const router = useRouter()
 
 const recommends = ref<Recommend[]>([])
 const displayedRecommends = ref<Recommend[]>([])
@@ -31,6 +36,10 @@ const selectedCategory = ref<Category>(CATEGORIES[0])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
 
+/**
+ * フィルター
+ * @param recommends
+ */
 const filterRecommends = (recommends: Recommend[]) => {
   return selectedCategory.value.id === 100
     ? recommends
@@ -39,17 +48,24 @@ const filterRecommends = (recommends: Recommend[]) => {
       )
 }
 
+/**
+ * ソート
+ * @param recommends
+ */
 const sortRecommends = (recommends: Recommend[]) => {
-  if (selectedSort.value.id === 201) {
+  if (selectedSort.value.id === 201)
     return recommends.sort(
       (a, b) => dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix()
     )
-  } else if (selectedSort.value.id === 202) {
+  if (selectedSort.value.id === 202)
     return recommends.sort((a, b) => b.likes.length - a.likes.length)
-  }
   return recommends
 }
 
+/**
+ * カテゴリ取得
+ * @param categoryId
+ */
 const getCategory = (categoryId: number): string => {
   const foundCategory = CATEGORIES.find(
     (category) => category.id === categoryId
@@ -58,15 +74,50 @@ const getCategory = (categoryId: number): string => {
 }
 
 /**
+ * パラメーターセット
+ * @param categoryId
+ * @param sortId
+ */
+const setParams = (categoryId: number, sortId: number) => {
+  router.push({
+    query: { category: categoryId, sort: sortId },
+  })
+}
+
+/**
+ * パラメーター取得
+ */
+const getParams = () => {
+  const params = route.query
+  const foundCategory = CATEGORIES.find(
+    (category) => category.id === Number(params.category)
+  )
+  selectedCategory.value = foundCategory ? foundCategory : CATEGORIES[0]
+
+  const foundSort = SORTS.find((sort) => sort.id === Number(params.sort))
+  selectedSort.value = foundSort ? foundSort : SORTS[0]
+}
+
+/**
+ *
+ * @param recommends
+ */
+const getDisplayedRecommends = (recommends: Recommend[]): Recommend[] => {
+  const filteredRecommends = filterRecommends(recommends)
+  return sortRecommends(filteredRecommends)
+}
+
+watch([selectedCategory, selectedSort], (newValue) => {
+  setParams(newValue[0].id, newValue[1].id)
+  displayedRecommends.value = getDisplayedRecommends(recommends.value)
+})
+
+/**
  * init
  */
 recommends.value = useRecommend().getRecommends()
-displayedRecommends.value = recommends.value
-
-watch([selectedCategory, selectedSort], (newValue) => {
-  const filteredRecommends = filterRecommends(recommends.value)
-  displayedRecommends.value = sortRecommends(filteredRecommends)
-})
+getParams()
+displayedRecommends.value = getDisplayedRecommends(recommends.value)
 </script>
 
 <template>
