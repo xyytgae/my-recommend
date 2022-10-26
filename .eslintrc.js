@@ -8,11 +8,6 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     sourceType: 'module'
   },
-  parserOptions: {
-    ecmaVersion: 13,
-    parser: '@typescript-eslint/parser',
-    sourceType: 'module',
-  },
   extends: [
     'eslint:recommended',
     'plugin:vue/vue3-essential',
