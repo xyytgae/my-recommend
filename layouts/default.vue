@@ -1,5 +1,6 @@
 <template>
   <v-app>
-    <Nuxt />
+    <!-- <Nuxt /> -->
+    <NuxtPage />
   </v-app>
 </template>

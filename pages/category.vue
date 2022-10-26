@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'PagesCategory',
+  name: 'PagesCategory'
 }
 </script>
 

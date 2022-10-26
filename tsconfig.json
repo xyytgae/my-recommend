@@ -11,12 +11,13 @@
     "strict": true,
     "noEmit": true,
     "experimentalDecorators": true,
-    "baseUrl": ".",
-    "paths": {
-      "~/*": ["./*"],
-      "@/*": ["./*"]
-    },
-    "types": ["@nuxt/types", "@types/node"]
+    "baseUrl": "."
+    // NOTE: 上書きしてしまうため不要
+    // "paths": {
+    //   "~/*": ["./*"],
+    //   "@/*": ["./*"],
+    //   "#app": ["node_modules/nuxt/dist/app"]
+    // },
   },
   "exclude": ["node_modules", ".nuxt", "dist"]
 }

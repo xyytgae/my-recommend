@@ -7,4 +7,6 @@
 /// <reference path=".nuxt/nitro.d.ts" />
 /// <reference types="unplugin-vue2-script-setup/types" />
 /// <reference path=".nuxt/auto-imports.d.ts" />
+/// <reference path="node_modules/vuetify/lib/util/colors.mjs" />
+
 export {}
