@@ -35,7 +35,6 @@ const displayedRecommends = ref<Recommend[]>([])
 const selectedCategory = ref<Category>(CATEGORIES[0])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
-const isShownRecommends = ref(false)
 
 /**
  * フィルター
@@ -121,12 +120,10 @@ watch([selectedCategory, selectedSort], (newValue) => {
 recommends.value = useRecommend().getRecommends()
 getParams()
 displayedRecommends.value = getDisplayedRecommends(recommends.value)
-isShownRecommends.value = true
 </script>
 
 <template>
   <div>
-    <v-btn color="primary"> sample </v-btn>
     <div class="my-4 d-flex item-operation">
       <v-select
         v-model="selectedCategory"
@@ -149,7 +146,7 @@ isShownRecommends.value = true
         return-object
       />
     </div>
-    <div v-if="isShownRecommends" class="recommends">
+    <div class="recommends">
       <div
         v-for="recommend in displayedRecommends"
         :key="recommend.id"
