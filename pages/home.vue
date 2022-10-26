@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+// import { ref, watch } from 'vue'
+import dayjs from 'dayjs'
 import { Recommend, Category, Sort } from '~/types/index'
 import { useRecommend } from '~/apis/recommend'
-import { useRoute, useRouter } from '#imports'
-import dayjs from 'dayjs'
+import { useRoute, useRouter, ref, watch } from '#imports'
 
 const CATEGORIES: Readonly<Category[]> = [
   { text: '全て', id: 100 },
@@ -16,12 +16,12 @@ const CATEGORIES: Readonly<Category[]> = [
   { text: 'ゲーム', id: 107 },
   { text: '趣味', id: 108 },
   { text: '本・雑誌', id: 109 },
-  { text: 'スポーツ', id: 110 },
+  { text: 'スポーツ', id: 110 }
 ] as const
 
 const SORTS: Readonly<Sort[]> = [
   { text: '新着順', id: 201 },
-  { text: 'いいね数', id: 202 },
+  { text: 'いいね数', id: 202 }
   // { text: 'おすすめ', id: 203 },
 ] as const
 
@@ -35,6 +35,7 @@ const displayedRecommends = ref<Recommend[]>([])
 const selectedCategory = ref<Category>(CATEGORIES[0])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
+const isShownRecommends = ref(false)
 
 /**
  * フィルター
@@ -53,12 +54,14 @@ const filterRecommends = (recommends: Recommend[]) => {
  * @param recommends
  */
 const sortRecommends = (recommends: Recommend[]) => {
-  if (selectedSort.value.id === 201)
+  if (selectedSort.value.id === 201) {
     return recommends.sort(
       (a, b) => dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix()
     )
-  if (selectedSort.value.id === 202)
+  }
+  if (selectedSort.value.id === 202) {
     return recommends.sort((a, b) => b.likes.length - a.likes.length)
+  }
   return recommends
 }
 
@@ -80,7 +83,7 @@ const getCategory = (categoryId: number): string => {
  */
 const setParams = (categoryId: number, sortId: number) => {
   router.push({
-    query: { category: categoryId, sort: sortId },
+    query: { category: categoryId, sort: sortId }
   })
 }
 
@@ -92,10 +95,10 @@ const getParams = () => {
   const foundCategory = CATEGORIES.find(
     (category) => category.id === Number(params.category)
   )
-  selectedCategory.value = foundCategory ? foundCategory : CATEGORIES[0]
+  selectedCategory.value = foundCategory ?? CATEGORIES[0]
 
   const foundSort = SORTS.find((sort) => sort.id === Number(params.sort))
-  selectedSort.value = foundSort ? foundSort : SORTS[0]
+  selectedSort.value = foundSort ?? SORTS[0]
 }
 
 /**
@@ -118,16 +121,18 @@ watch([selectedCategory, selectedSort], (newValue) => {
 recommends.value = useRecommend().getRecommends()
 getParams()
 displayedRecommends.value = getDisplayedRecommends(recommends.value)
+isShownRecommends.value = true
 </script>
 
 <template>
   <div>
+    <v-btn color="primary"> sample </v-btn>
     <div class="my-4 d-flex item-operation">
       <v-select
         v-model="selectedCategory"
         :items="CATEGORIES"
+        item-title="text"
         class="px-2"
-        menu-props="auto"
         full-width
         filled
         label="Category"
@@ -136,15 +141,15 @@ displayedRecommends.value = getDisplayedRecommends(recommends.value)
       <v-select
         v-model="selectedSort"
         :items="SORTS"
+        item-title="text"
         class="px-2"
-        menu-props="auto"
         full-width
         filled
         label="Sort"
         return-object
       />
     </div>
-    <div class="recommends">
+    <div v-if="isShownRecommends" class="recommends">
       <div
         v-for="recommend in displayedRecommends"
         :key="recommend.id"

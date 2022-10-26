@@ -11,10 +11,10 @@ const RECOMMENDS = [
       '/images/pic1.jpg',
       '/images/pic2.jpg',
       '/images/pic3.jpg',
-      '/images/pic4.jpg',
+      '/images/pic4.jpg'
     ],
     categoryId: 101,
-    createdAt: '2022/10/1',
+    createdAt: '2022/10/1'
   },
   {
     id: 2,
@@ -25,7 +25,7 @@ const RECOMMENDS = [
       '詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2詳細2',
     images: ['/images/pic5.jpg', '/images/pic6.jpg'],
     categoryId: 102,
-    createdAt: '2022/10/5',
+    createdAt: '2022/10/5'
   },
   {
     id: 3,
@@ -35,7 +35,7 @@ const RECOMMENDS = [
     detail: '詳細3詳細3',
     images: ['/images/pic7.jpg'],
     categoryId: 108,
-    createdAt: '2022/10/8',
+    createdAt: '2022/10/8'
   },
   {
     id: 4,
@@ -45,8 +45,8 @@ const RECOMMENDS = [
     detail: '詳細4詳細4',
     images: [],
     categoryId: 109,
-    createdAt: '2022/9/27',
-  },
+    createdAt: '2022/9/27'
+  }
 ]
 
 export const useRecommend = () => {
@@ -57,6 +57,6 @@ export const useRecommend = () => {
     getRecommend(id: number): Recommend | undefined {
       const found = RECOMMENDS.find((recommend) => recommend.id === id)
       return found
-    },
+    }
   }
 }
