@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'PagesUserIdStatusStatusId',
+  name: 'PagesUserIdStatusStatusId'
 }
 </script>
 
