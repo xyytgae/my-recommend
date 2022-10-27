@@ -1,4 +1,7 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
 import { defineNuxtConfig } from 'nuxt/config'
+const envPath = 'config/.env'
+require('dotenv').config({ path: envPath })
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -34,7 +37,12 @@ export default defineNuxtConfig({
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: [],
+  modules: ['@nuxtjs/supabase'],
+
+  supabase: {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY
+  },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
