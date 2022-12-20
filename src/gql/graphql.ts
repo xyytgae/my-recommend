@@ -75,6 +75,11 @@ export type FloatFilter = {
   neq?: InputMaybe<Scalars['Float']>;
 };
 
+/** Boolean expression comparing fields on type "ID" */
+export type IdFilter = {
+  eq?: InputMaybe<Scalars['ID']>;
+};
+
 /** Boolean expression comparing fields on type "Int" */
 export type IntFilter = {
   eq?: InputMaybe<Scalars['Int']>;
@@ -86,77 +91,148 @@ export type IntFilter = {
   neq?: InputMaybe<Scalars['Int']>;
 };
 
-/** Boolean expression comparing fields on type "JSON" */
-export type JsonFilter = {
-  eq?: InputMaybe<Scalars['JSON']>;
-  neq?: InputMaybe<Scalars['JSON']>;
+export type Likes = Node & {
+  __typename?: 'Likes';
+  createdAt: Scalars['Datetime'];
+  id: Scalars['UUID'];
+  /** Globally Unique Record Identifier */
+  nodeId: Scalars['ID'];
+  recommend?: Maybe<Recommends>;
+  recommendId: Scalars['UUID'];
+  user?: Maybe<Users>;
+  userId: Scalars['UUID'];
+};
+
+export type LikesConnection = {
+  __typename?: 'LikesConnection';
+  edges: Array<LikesEdge>;
+  pageInfo: PageInfo;
+};
+
+export type LikesDeleteResponse = {
+  __typename?: 'LikesDeleteResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Likes>;
+};
+
+export type LikesEdge = {
+  __typename?: 'LikesEdge';
+  cursor: Scalars['String'];
+  node: Likes;
+};
+
+export type LikesFilter = {
+  createdAt?: InputMaybe<DatetimeFilter>;
+  id?: InputMaybe<UuidFilter>;
+  nodeId?: InputMaybe<IdFilter>;
+  recommendId?: InputMaybe<UuidFilter>;
+  userId?: InputMaybe<UuidFilter>;
+};
+
+export type LikesInsertInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']>;
+  id?: InputMaybe<Scalars['UUID']>;
+  recommendId?: InputMaybe<Scalars['UUID']>;
+  userId?: InputMaybe<Scalars['UUID']>;
+};
+
+export type LikesInsertResponse = {
+  __typename?: 'LikesInsertResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Likes>;
+};
+
+export type LikesOrderBy = {
+  createdAt?: InputMaybe<OrderByDirection>;
+  id?: InputMaybe<OrderByDirection>;
+  recommendId?: InputMaybe<OrderByDirection>;
+  userId?: InputMaybe<OrderByDirection>;
+};
+
+export type LikesUpdateInput = {
+  createdAt?: InputMaybe<Scalars['Datetime']>;
+  id?: InputMaybe<Scalars['UUID']>;
+  recommendId?: InputMaybe<Scalars['UUID']>;
+  userId?: InputMaybe<Scalars['UUID']>;
+};
+
+export type LikesUpdateResponse = {
+  __typename?: 'LikesUpdateResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Likes>;
 };
 
 /** The root type for creating and mutating data */
 export type Mutation = {
   __typename?: 'Mutation';
-  /** Deletes zero or more records from the collection */
-  deleteFromlikesCollection: LikesDeleteResponse;
-  /** Deletes zero or more records from the collection */
-  deleteFromrecommendsCollection: RecommendsDeleteResponse;
-  /** Deletes zero or more records from the collection */
-  deleteFromusersCollection: UsersDeleteResponse;
-  /** Adds one or more `likesInsertResponse` records to the collection */
-  insertIntolikesCollection?: Maybe<LikesInsertResponse>;
-  /** Adds one or more `recommendsInsertResponse` records to the collection */
-  insertIntorecommendsCollection?: Maybe<RecommendsInsertResponse>;
-  /** Adds one or more `usersInsertResponse` records to the collection */
-  insertIntousersCollection?: Maybe<UsersInsertResponse>;
-  /** Updates zero or more records in the collection */
-  updatelikesCollection: LikesUpdateResponse;
-  /** Updates zero or more records in the collection */
-  updaterecommendsCollection: RecommendsUpdateResponse;
-  /** Updates zero or more records in the collection */
-  updateusersCollection: UsersUpdateResponse;
+  /** Deletes zero or more records from the `Likes` collection */
+  deleteFromLikesCollection: LikesDeleteResponse;
+  /** Deletes zero or more records from the `Recommends` collection */
+  deleteFromRecommendsCollection: RecommendsDeleteResponse;
+  /** Deletes zero or more records from the `Users` collection */
+  deleteFromUsersCollection: UsersDeleteResponse;
+  /** Adds one or more `Likes` records to the collection */
+  insertIntoLikesCollection?: Maybe<LikesInsertResponse>;
+  /** Adds one or more `Recommends` records to the collection */
+  insertIntoRecommendsCollection?: Maybe<RecommendsInsertResponse>;
+  /** Adds one or more `Users` records to the collection */
+  insertIntoUsersCollection?: Maybe<UsersInsertResponse>;
+  /** Updates zero or more records in the `Likes` collection */
+  updateLikesCollection: LikesUpdateResponse;
+  /** Updates zero or more records in the `Recommends` collection */
+  updateRecommendsCollection: RecommendsUpdateResponse;
+  /** Updates zero or more records in the `Users` collection */
+  updateUsersCollection: UsersUpdateResponse;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationDeleteFromlikesCollectionArgs = {
+export type MutationDeleteFromLikesCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<LikesFilter>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationDeleteFromrecommendsCollectionArgs = {
+export type MutationDeleteFromRecommendsCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<RecommendsFilter>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationDeleteFromusersCollectionArgs = {
+export type MutationDeleteFromUsersCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<UsersFilter>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationInsertIntolikesCollectionArgs = {
+export type MutationInsertIntoLikesCollectionArgs = {
   objects: Array<LikesInsertInput>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationInsertIntorecommendsCollectionArgs = {
+export type MutationInsertIntoRecommendsCollectionArgs = {
   objects: Array<RecommendsInsertInput>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationInsertIntousersCollectionArgs = {
+export type MutationInsertIntoUsersCollectionArgs = {
   objects: Array<UsersInsertInput>;
 };
 
 
 /** The root type for creating and mutating data */
-export type MutationUpdatelikesCollectionArgs = {
+export type MutationUpdateLikesCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<LikesFilter>;
   set: LikesUpdateInput;
@@ -164,7 +240,7 @@ export type MutationUpdatelikesCollectionArgs = {
 
 
 /** The root type for creating and mutating data */
-export type MutationUpdaterecommendsCollectionArgs = {
+export type MutationUpdateRecommendsCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<RecommendsFilter>;
   set: RecommendsUpdateInput;
@@ -172,10 +248,15 @@ export type MutationUpdaterecommendsCollectionArgs = {
 
 
 /** The root type for creating and mutating data */
-export type MutationUpdateusersCollectionArgs = {
+export type MutationUpdateUsersCollectionArgs = {
   atMost?: Scalars['Int'];
   filter?: InputMaybe<UsersFilter>;
   set: UsersUpdateInput;
+};
+
+export type Node = {
+  /** Retrieves a record by `ID` */
+  nodeId: Scalars['ID'];
 };
 
 /** Defines a per-field sorting order */
@@ -201,11 +282,13 @@ export type PageInfo = {
 /** The root type for querying data */
 export type Query = {
   __typename?: 'Query';
-  /** A pagable collection of type `likes` */
+  /** A pagable collection of type `Likes` */
   likesCollection?: Maybe<LikesConnection>;
-  /** A pagable collection of type `recommends` */
+  /** Retrieve a record by its `ID` */
+  node?: Maybe<Node>;
+  /** A pagable collection of type `Recommends` */
   recommendsCollection?: Maybe<RecommendsConnection>;
-  /** A pagable collection of type `users` */
+  /** A pagable collection of type `Users` */
   usersCollection?: Maybe<UsersConnection>;
 };
 
@@ -218,6 +301,12 @@ export type QueryLikesCollectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<LikesOrderBy>>;
+};
+
+
+/** The root type for querying data */
+export type QueryNodeArgs = {
+  nodeId: Scalars['ID'];
 };
 
 
@@ -240,6 +329,107 @@ export type QueryUsersCollectionArgs = {
   first?: InputMaybe<Scalars['Int']>;
   last?: InputMaybe<Scalars['Int']>;
   orderBy?: InputMaybe<Array<UsersOrderBy>>;
+};
+
+export type Recommends = Node & {
+  __typename?: 'Recommends';
+  categoryId?: Maybe<Scalars['String']>;
+  createdAt: Scalars['Datetime'];
+  detail?: Maybe<Scalars['String']>;
+  id: Scalars['UUID'];
+  images?: Maybe<Array<Maybe<Scalars['String']>>>;
+  likesCollection?: Maybe<LikesConnection>;
+  likesCount?: Maybe<Scalars['Int']>;
+  /** Globally Unique Record Identifier */
+  nodeId: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  user?: Maybe<Users>;
+  userId?: Maybe<Scalars['UUID']>;
+};
+
+
+export type RecommendsLikesCollectionArgs = {
+  after?: InputMaybe<Scalars['Cursor']>;
+  before?: InputMaybe<Scalars['Cursor']>;
+  filter?: InputMaybe<LikesFilter>;
+  first?: InputMaybe<Scalars['Int']>;
+  last?: InputMaybe<Scalars['Int']>;
+  orderBy?: InputMaybe<Array<LikesOrderBy>>;
+};
+
+export type RecommendsConnection = {
+  __typename?: 'RecommendsConnection';
+  edges: Array<RecommendsEdge>;
+  pageInfo: PageInfo;
+};
+
+export type RecommendsDeleteResponse = {
+  __typename?: 'RecommendsDeleteResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Recommends>;
+};
+
+export type RecommendsEdge = {
+  __typename?: 'RecommendsEdge';
+  cursor: Scalars['String'];
+  node: Recommends;
+};
+
+export type RecommendsFilter = {
+  categoryId?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<DatetimeFilter>;
+  detail?: InputMaybe<StringFilter>;
+  id?: InputMaybe<UuidFilter>;
+  nodeId?: InputMaybe<IdFilter>;
+  title?: InputMaybe<StringFilter>;
+  userId?: InputMaybe<UuidFilter>;
+};
+
+export type RecommendsInsertInput = {
+  categoryId?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['Datetime']>;
+  detail?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['UUID']>;
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['UUID']>;
+};
+
+export type RecommendsInsertResponse = {
+  __typename?: 'RecommendsInsertResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Recommends>;
+};
+
+export type RecommendsOrderBy = {
+  categoryId?: InputMaybe<OrderByDirection>;
+  createdAt?: InputMaybe<OrderByDirection>;
+  detail?: InputMaybe<OrderByDirection>;
+  id?: InputMaybe<OrderByDirection>;
+  title?: InputMaybe<OrderByDirection>;
+  userId?: InputMaybe<OrderByDirection>;
+};
+
+export type RecommendsUpdateInput = {
+  categoryId?: InputMaybe<Scalars['String']>;
+  createdAt?: InputMaybe<Scalars['Datetime']>;
+  detail?: InputMaybe<Scalars['String']>;
+  id?: InputMaybe<Scalars['UUID']>;
+  images?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  title?: InputMaybe<Scalars['String']>;
+  userId?: InputMaybe<Scalars['UUID']>;
+};
+
+export type RecommendsUpdateResponse = {
+  __typename?: 'RecommendsUpdateResponse';
+  /** Count of the records impacted by the mutation */
+  affectedCount: Scalars['Int'];
+  /** Array of records impacted by the mutation */
+  records: Array<Recommends>;
 };
 
 /** Boolean expression comparing fields on type "String" */
@@ -271,181 +461,18 @@ export type UuidFilter = {
   neq?: InputMaybe<Scalars['UUID']>;
 };
 
-export type Likes = {
-  __typename?: 'likes';
-  created_at: Scalars['Datetime'];
+export type Users = Node & {
+  __typename?: 'Users';
+  avatarUrl?: Maybe<Scalars['String']>;
   id: Scalars['UUID'];
-  recommend_id: Scalars['UUID'];
-  recommends?: Maybe<Recommends>;
-  user_id: Scalars['UUID'];
-  users?: Maybe<Users>;
-};
-
-export type LikesConnection = {
-  __typename?: 'likesConnection';
-  edges: Array<LikesEdge>;
-  pageInfo: PageInfo;
-};
-
-export type LikesDeleteResponse = {
-  __typename?: 'likesDeleteResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Likes>;
-};
-
-export type LikesEdge = {
-  __typename?: 'likesEdge';
-  cursor: Scalars['String'];
-  node: Likes;
-};
-
-export type LikesFilter = {
-  created_at?: InputMaybe<DatetimeFilter>;
-  id?: InputMaybe<UuidFilter>;
-  recommend_id?: InputMaybe<UuidFilter>;
-  user_id?: InputMaybe<UuidFilter>;
-};
-
-export type LikesInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  recommend_id?: InputMaybe<Scalars['UUID']>;
-  user_id?: InputMaybe<Scalars['UUID']>;
-};
-
-export type LikesInsertResponse = {
-  __typename?: 'likesInsertResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Likes>;
-};
-
-export type LikesOrderBy = {
-  created_at?: InputMaybe<OrderByDirection>;
-  id?: InputMaybe<OrderByDirection>;
-  recommend_id?: InputMaybe<OrderByDirection>;
-  user_id?: InputMaybe<OrderByDirection>;
-};
-
-export type LikesUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  recommend_id?: InputMaybe<Scalars['UUID']>;
-  user_id?: InputMaybe<Scalars['UUID']>;
-};
-
-export type LikesUpdateResponse = {
-  __typename?: 'likesUpdateResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Likes>;
-};
-
-export type Recommends = {
-  __typename?: 'recommends';
-  created_at: Scalars['Datetime'];
-  detail?: Maybe<Scalars['String']>;
-  id: Scalars['UUID'];
-  images?: Maybe<Array<Maybe<Scalars['String']>>>;
+  instagramUrl?: Maybe<Scalars['String']>;
   likesCollection?: Maybe<LikesConnection>;
-  title?: Maybe<Scalars['String']>;
-  user_id?: Maybe<Scalars['UUID']>;
-  users?: Maybe<Users>;
-};
-
-
-export type RecommendsLikesCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']>;
-  before?: InputMaybe<Scalars['Cursor']>;
-  filter?: InputMaybe<LikesFilter>;
-  first?: InputMaybe<Scalars['Int']>;
-  last?: InputMaybe<Scalars['Int']>;
-  orderBy?: InputMaybe<Array<LikesOrderBy>>;
-};
-
-export type RecommendsConnection = {
-  __typename?: 'recommendsConnection';
-  edges: Array<RecommendsEdge>;
-  pageInfo: PageInfo;
-};
-
-export type RecommendsDeleteResponse = {
-  __typename?: 'recommendsDeleteResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Recommends>;
-};
-
-export type RecommendsEdge = {
-  __typename?: 'recommendsEdge';
-  cursor: Scalars['String'];
-  node: Recommends;
-};
-
-export type RecommendsFilter = {
-  created_at?: InputMaybe<DatetimeFilter>;
-  detail?: InputMaybe<StringFilter>;
-  id?: InputMaybe<UuidFilter>;
-  title?: InputMaybe<StringFilter>;
-  user_id?: InputMaybe<UuidFilter>;
-};
-
-export type RecommendsInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']>;
-  detail?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  title?: InputMaybe<Scalars['String']>;
-  user_id?: InputMaybe<Scalars['UUID']>;
-};
-
-export type RecommendsInsertResponse = {
-  __typename?: 'recommendsInsertResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Recommends>;
-};
-
-export type RecommendsOrderBy = {
-  created_at?: InputMaybe<OrderByDirection>;
-  detail?: InputMaybe<OrderByDirection>;
-  id?: InputMaybe<OrderByDirection>;
-  images?: InputMaybe<OrderByDirection>;
-  title?: InputMaybe<OrderByDirection>;
-  user_id?: InputMaybe<OrderByDirection>;
-};
-
-export type RecommendsUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']>;
-  detail?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['UUID']>;
-  title?: InputMaybe<Scalars['String']>;
-  user_id?: InputMaybe<Scalars['UUID']>;
-};
-
-export type RecommendsUpdateResponse = {
-  __typename?: 'recommendsUpdateResponse';
-  /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int'];
-  /** Array of records impacted by the mutation */
-  records: Array<Recommends>;
-};
-
-export type Users = {
-  __typename?: 'users';
-  avatar_url?: Maybe<Scalars['String']>;
-  id: Scalars['UUID'];
-  instagram_url?: Maybe<Scalars['String']>;
-  likesCollection?: Maybe<LikesConnection>;
+  /** Globally Unique Record Identifier */
+  nodeId: Scalars['ID'];
   recommendsCollection?: Maybe<RecommendsConnection>;
-  twitter_url?: Maybe<Scalars['String']>;
-  updated_at?: Maybe<Scalars['Datetime']>;
-  user_name?: Maybe<Scalars['String']>;
+  twitterUrl?: Maybe<Scalars['String']>;
+  updatedAt?: Maybe<Scalars['Datetime']>;
+  userName?: Maybe<Scalars['String']>;
 };
 
 
@@ -469,13 +496,13 @@ export type UsersRecommendsCollectionArgs = {
 };
 
 export type UsersConnection = {
-  __typename?: 'usersConnection';
+  __typename?: 'UsersConnection';
   edges: Array<UsersEdge>;
   pageInfo: PageInfo;
 };
 
 export type UsersDeleteResponse = {
-  __typename?: 'usersDeleteResponse';
+  __typename?: 'UsersDeleteResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -483,31 +510,32 @@ export type UsersDeleteResponse = {
 };
 
 export type UsersEdge = {
-  __typename?: 'usersEdge';
+  __typename?: 'UsersEdge';
   cursor: Scalars['String'];
   node: Users;
 };
 
 export type UsersFilter = {
-  avatar_url?: InputMaybe<StringFilter>;
+  avatarUrl?: InputMaybe<StringFilter>;
   id?: InputMaybe<UuidFilter>;
-  instagram_url?: InputMaybe<StringFilter>;
-  twitter_url?: InputMaybe<StringFilter>;
-  updated_at?: InputMaybe<DatetimeFilter>;
-  user_name?: InputMaybe<StringFilter>;
+  instagramUrl?: InputMaybe<StringFilter>;
+  nodeId?: InputMaybe<IdFilter>;
+  twitterUrl?: InputMaybe<StringFilter>;
+  updatedAt?: InputMaybe<DatetimeFilter>;
+  userName?: InputMaybe<StringFilter>;
 };
 
 export type UsersInsertInput = {
-  avatar_url?: InputMaybe<Scalars['String']>;
+  avatarUrl?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['UUID']>;
-  instagram_url?: InputMaybe<Scalars['String']>;
-  twitter_url?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['Datetime']>;
-  user_name?: InputMaybe<Scalars['String']>;
+  instagramUrl?: InputMaybe<Scalars['String']>;
+  twitterUrl?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']>;
+  userName?: InputMaybe<Scalars['String']>;
 };
 
 export type UsersInsertResponse = {
-  __typename?: 'usersInsertResponse';
+  __typename?: 'UsersInsertResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
@@ -515,25 +543,25 @@ export type UsersInsertResponse = {
 };
 
 export type UsersOrderBy = {
-  avatar_url?: InputMaybe<OrderByDirection>;
+  avatarUrl?: InputMaybe<OrderByDirection>;
   id?: InputMaybe<OrderByDirection>;
-  instagram_url?: InputMaybe<OrderByDirection>;
-  twitter_url?: InputMaybe<OrderByDirection>;
-  updated_at?: InputMaybe<OrderByDirection>;
-  user_name?: InputMaybe<OrderByDirection>;
+  instagramUrl?: InputMaybe<OrderByDirection>;
+  twitterUrl?: InputMaybe<OrderByDirection>;
+  updatedAt?: InputMaybe<OrderByDirection>;
+  userName?: InputMaybe<OrderByDirection>;
 };
 
 export type UsersUpdateInput = {
-  avatar_url?: InputMaybe<Scalars['String']>;
+  avatarUrl?: InputMaybe<Scalars['String']>;
   id?: InputMaybe<Scalars['UUID']>;
-  instagram_url?: InputMaybe<Scalars['String']>;
-  twitter_url?: InputMaybe<Scalars['String']>;
-  updated_at?: InputMaybe<Scalars['Datetime']>;
-  user_name?: InputMaybe<Scalars['String']>;
+  instagramUrl?: InputMaybe<Scalars['String']>;
+  twitterUrl?: InputMaybe<Scalars['String']>;
+  updatedAt?: InputMaybe<Scalars['Datetime']>;
+  userName?: InputMaybe<Scalars['String']>;
 };
 
 export type UsersUpdateResponse = {
-  __typename?: 'usersUpdateResponse';
+  __typename?: 'UsersUpdateResponse';
   /** Count of the records impacted by the mutation */
   affectedCount: Scalars['Int'];
   /** Array of records impacted by the mutation */
