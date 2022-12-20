@@ -4,7 +4,7 @@ import { Query, QueryRecommendsCollectionArgs } from '~/src/gql/graphql'
 export type GetRecommends = NonNullable<Query['recommendsCollection']>['edges']
 
 export const getRecommends = gql`
-  query ($orderBy: Int!) {
+  query ($orderBy: Array!) {
     recommendsCollection(orderBy: $orderBy) {
       edges {
         node {
