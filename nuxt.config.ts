@@ -49,8 +49,15 @@ export default defineNuxtConfig({
     customVariables: ['~/assets/variables.scss']
   },
 
+  runtimeConfig: {
+    public: {
+      supabaseKey: process.env.SUPABASE_KEY,
+      graphqlUrl: process.env.GRAPHQL_URL
+    }
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['vuetify']
+    transpile: ['vuetify', '@urql/vue']
   }
 })
