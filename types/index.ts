@@ -1,3 +1,5 @@
+import { UsersRecommendsCollectionArgs } from '~/src/gql/graphql'
+
 export type Recommend = {
   id: number
   title: string
@@ -22,5 +24,5 @@ export type Category = {
 
 export type Sort = {
   text: string
-  id: number
+  value: UsersRecommendsCollectionArgs['orderBy']
 }

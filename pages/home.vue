@@ -1,130 +1,101 @@
 <script setup lang="ts">
-// import { ref, watch } from 'vue'
 import dayjs from 'dayjs'
-import { Recommend, Category, Sort } from '~/types/index'
-import { useRecommend } from '~/apis/recommend'
-import { useRoute, useRouter, ref, watch } from '#imports'
+import { Sort } from '~/types/index'
+import { GetRecommends, useRecommend } from '~/apis/recommend'
+import { ref } from '#imports'
+import { OrderByDirection } from '~/src/gql/graphql'
 
-const CATEGORIES: Readonly<Category[]> = [
-  { text: '全て', id: 100 },
-  { text: '芸能人', id: 101 },
-  { text: 'テレビ・ラジオ', id: 102 },
-  { text: '音楽', id: 103 },
-  { text: '映画', id: 104 },
-  { text: '演劇・ミュージカル', id: 105 },
-  { text: 'アニメ・漫画', id: 106 },
-  { text: 'ゲーム', id: 107 },
-  { text: '趣味', id: 108 },
-  { text: '本・雑誌', id: 109 },
-  { text: 'スポーツ', id: 110 }
-] as const
+// const CATEGORIES: Readonly<Category[]> = [
+//   { text: '全て', id: 100 },
+//   { text: '芸能人', id: 101 },
+//   { text: 'テレビ・ラジオ', id: 102 },
+//   { text: '音楽', id: 103 },
+//   { text: '映画', id: 104 },
+//   { text: '演劇・ミュージカル', id: 105 },
+//   { text: 'アニメ・漫画', id: 106 },
+//   { text: 'ゲーム', id: 107 },
+//   { text: '趣味', id: 108 },
+//   { text: '本・雑誌', id: 109 },
+//   { text: 'スポーツ', id: 110 }
+// ] as const
 
 const SORTS: Readonly<Sort[]> = [
-  { text: '新着順', id: 201 },
-  { text: 'いいね数', id: 202 }
-  // { text: 'おすすめ', id: 203 },
-] as const
+  { text: '新着順', value: [{ createdAt: OrderByDirection.AscNullsLast }] },
+  { text: '投稿順', value: [{ createdAt: OrderByDirection.DescNullsLast }] }
+  // { text: 'おすすめ', value: [{ createdAt: OrderByDirection.DescNullsLast }] },
+]
 
-const route = useRoute()
-const router = useRouter()
-
-const recommends = ref<Recommend[]>([])
-const displayedRecommends = ref<Recommend[]>([])
+// const route = useRoute()
+// const router = useRouter()
+const { getRecommends } = useRecommend()
+const recommends = ref<GetRecommends>([])
 
 // NOTE: reactiveだとバグる
-const selectedCategory = ref<Category>(CATEGORIES[0])
+// const selectedCategory = ref<Category>(CATEGORIES[0])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
-
-/**
- * フィルター
- * @param recommends
- */
-const filterRecommends = (recommends: Recommend[]) => {
-  return selectedCategory.value.id === 100
-    ? recommends
-    : recommends.filter(
-        (recommend) => recommend.categoryId === selectedCategory.value.id
-      )
-}
-
-/**
- * ソート
- * @param recommends
- */
-const sortRecommends = (recommends: Recommend[]) => {
-  if (selectedSort.value.id === 201) {
-    return recommends.sort(
-      (a, b) => dayjs(b.createdAt).unix() - dayjs(a.createdAt).unix()
-    )
-  }
-  if (selectedSort.value.id === 202) {
-    return recommends.sort((a, b) => b.likes.length - a.likes.length)
-  }
-  return recommends
-}
 
 /**
  * カテゴリ取得
  * @param categoryId
  */
-const getCategory = (categoryId: number): string => {
-  const foundCategory = CATEGORIES.find(
-    (category) => category.id === categoryId
-  )
-  return foundCategory ? foundCategory.text : 'カテゴリなし'
-}
+// const getCategory = (categoryId: number): string => {
+//   const foundCategory = CATEGORIES.find(
+//     (category) => category.id === categoryId
+//   )
+//   return foundCategory ? foundCategory.text : 'カテゴリなし'
+// }
 
 /**
  * パラメーターセット
  * @param categoryId
  * @param sortId
  */
-const setParams = (categoryId: number, sortId: number) => {
-  router.push({
-    query: { category: categoryId, sort: sortId }
-  })
-}
+// const setParams = (categoryId: number, sortId: number) => {
+//   router.push({
+//     query: { category: categoryId, sort: sortId }
+//   })
+// }
 
 /**
  * パラメーター取得
  */
-const getParams = () => {
-  const params = route.query
-  const foundCategory = CATEGORIES.find(
-    (category) => category.id === Number(params.category)
-  )
-  selectedCategory.value = foundCategory ?? CATEGORIES[0]
+// const getParams = () => {
+//   const params = route.query
+//   const foundCategory = CATEGORIES.find(
+//     (category) => category.id === Number(params.category)
+//   )
+//   selectedCategory.value = foundCategory ?? CATEGORIES[0]
 
-  const foundSort = SORTS.find((sort) => sort.id === Number(params.sort))
-  selectedSort.value = foundSort ?? SORTS[0]
-}
+//   const foundSort = SORTS.find((sort) => sort.id === Number(params.sort))
+//   selectedSort.value = foundSort ?? SORTS[0]
+// }
 
 /**
- *
- * @param recommends
+ * ◯日前取得
+ * @param createdAt
  */
-const getDisplayedRecommends = (recommends: Recommend[]): Recommend[] => {
-  const filteredRecommends = filterRecommends(recommends)
-  return sortRecommends(filteredRecommends)
+const getTimePeriod = (createdAt: GetRecommends[0]['node']['createdAt']) => {
+  const today = dayjs()
+  return today.diff(createdAt, 'day')
 }
-
-watch([selectedCategory, selectedSort], (newValue) => {
-  setParams(newValue[0].id, newValue[1].id)
-  displayedRecommends.value = getDisplayedRecommends(recommends.value)
-})
 
 /**
  * init
  */
-recommends.value = useRecommend().getRecommends()
-getParams()
-displayedRecommends.value = getDisplayedRecommends(recommends.value)
+// const result = await urql.useQuery({
+//   query: getRecommends,
+//   variables: { orderBy: selectedSort.value.value }
+// })
+
+const result = await getRecommends({ orderBy: selectedSort.value.value })
+recommends.value = result
 </script>
 
 <template>
   <div>
-    <div class="my-4 d-flex item-operation">
+    <!-- NOTE: 一旦コメントアウト -->
+    <!-- <div class="my-4 d-flex item-operation">
       <v-select
         v-model="selectedCategory"
         :items="CATEGORIES"
@@ -145,32 +116,43 @@ displayedRecommends.value = getDisplayedRecommends(recommends.value)
         label="Sort"
         return-object
       />
-    </div>
-    <div class="recommends">
+    </div> -->
+
+    <div>
       <div
-        v-for="recommend in displayedRecommends"
-        :key="recommend.id"
-        class="recommend mb-2 mx-4 d-flex"
+        v-for="recommend in recommends"
+        :key="recommend.node.id"
+        class="recommend my-8 mx-4 mx-auto"
       >
-        <v-carousel hide-delimiters height="150" class="carousel">
+        <v-carousel
+          v-if="recommend.node.images?.length"
+          hide-delimiters
+          height=""
+          class="carousel-image"
+        >
           <v-carousel-item
-            v-for="image in recommend.images"
-            :key="image"
+            v-for="(image, index) in recommend.node.images"
+            :key="index"
             :src="image"
           />
         </v-carousel>
 
-        <div class="text-contents">
+        <div class="text-contents pa-4">
           <nuxt-link
-            :to="`/${recommend.userId}/status/${recommend.id}`"
+            :to="`/${recommend.node.userId}/status/${recommend.node.id}`"
             class="text-decoration-none d-flex"
           >
-            <h3>{{ recommend.title }}</h3>
+            <h3>{{ recommend.node.title }}</h3>
           </nuxt-link>
-          <p>{{ recommend.detail }}</p>
-          <p>{{ getCategory(recommend.categoryId) }}</p>
-          <p>{{ recommend.createdAt }}</p>
-          <v-icon>mdi-heart</v-icon>{{ recommend.likes.length }}
+          <p>{{ recommend.node.detail }}</p>
+          <div class="d-flex mt-8">
+            <p class="text-caption">
+              {{ `${getTimePeriod(recommend.node.createdAt)}日前` }}
+            </p>
+            <!-- <p>{{ getCategory(recommend.node.categoryId) }}</p> -->
+            <v-icon class="ml-auto">mdi-heart</v-icon>
+            {{ recommend.node.likesCount }}
+          </div>
         </div>
       </div>
     </div>
@@ -178,19 +160,17 @@ displayedRecommends.value = getDisplayedRecommends(recommends.value)
 </template>
 
 <style lang="scss" scoped>
+.carousel-image {
+  border-radius: 16px !important;
+}
 .recommend {
-  border: 1px solid black;
+  border: 1px solid silver;
   border-radius: 16px;
+  max-width: 480px;
 }
 
 .text-contents {
   word-wrap: break-word;
-}
-
-.carousel {
-  border-radius: 16px;
-  min-width: 40%;
-  max-width: 40%;
 }
 
 .item-operation {
