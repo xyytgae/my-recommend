@@ -12,6 +12,7 @@
 declare module '@nuxt/schema' {
   interface RuntimeConfig {
     public: {
+      supabaseUrl: string
       supabaseKey: string
       graphqlUrl: string
     }
