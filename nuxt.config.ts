@@ -31,7 +31,7 @@ export default defineNuxtConfig({
   plugins: [],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: ['~/components', '~/fragments'],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [],
@@ -51,8 +51,10 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
+      supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
-      graphqlUrl: process.env.GRAPHQL_URL
+      graphqlUrl: process.env.GRAPHQL_URL,
+      supabaseStorageUrl: process.env.SUPABASE_STORAGE_URL
     }
   },
 

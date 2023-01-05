@@ -2,8 +2,9 @@
 import dayjs from 'dayjs'
 import { Sort } from '~/types/index'
 import { GetRecommends, useRecommend } from '~/apis/recommend'
-import { ref } from '#imports'
+import { ref, useRuntimeConfig } from '#imports'
 import { OrderByDirection } from '~/src/gql/graphql'
+import { isOpenedCreateRecommendDialog } from '~~/fragments/CreateRecommendDialog.vue'
 
 // const CATEGORIES: Readonly<Category[]> = [
 //   { text: '全て', id: 100 },
@@ -27,7 +28,9 @@ const SORTS: Readonly<Sort[]> = [
 
 // const route = useRoute()
 // const router = useRouter()
-const { getRecommends } = useRecommend()
+const { getRecommends } = useRecommend
+const config = useRuntimeConfig()
+
 const recommends = ref<GetRecommends>([])
 
 // NOTE: reactiveだとバグる
@@ -119,32 +122,67 @@ recommends.value = result
     </div> -->
 
     <div>
+      <div v-if="recommends.length <= 0">まだ投稿されていません</div>
       <div
         v-for="recommend in recommends"
         :key="recommend.node.id"
         class="recommend my-8 mx-4 mx-auto"
       >
-        <v-carousel
-          v-if="recommend.node.images?.length"
+        <template
+          v-if="
+            recommend.node.imagesCollection &&
+            recommend.node.imagesCollection.edges.length >= 0
+          "
+        >
+          <div
+            v-for="(image, index) in recommend.node.imagesCollection.edges"
+            :key="index"
+          >
+            <img
+              class="recommend-image"
+              :src="config.public.supabaseStorageUrl + image.node.url"
+            />
+            <template
+              v-if="
+                image.node.hashtagsCollection &&
+                image.node.hashtagsCollection.edges.length >= 0
+              "
+            >
+              <div
+                v-for="(hashtag, index) in image.node.hashtagsCollection.edges"
+                :key="index"
+              >
+                <p>ハッシュタグ：{{ hashtag.node.text }}</p>
+                <p>x：{{ hashtag.node.x }}</p>
+                <p>y：{{ hashtag.node.y }}</p>
+              </div>
+            </template>
+          </div>
+        </template>
+        <!-- <v-carousel
+          v-if="
+            recommend.node.imagesCollection &&
+            recommend.node.imagesCollection.edges.length >= 0
+          "
           hide-delimiters
           height=""
           class="carousel-image"
         >
           <v-carousel-item
-            v-for="(image, index) in recommend.node.images"
+            v-for="(image, index) in recommend.node.imagesCollection.edges"
             :key="index"
-            :src="image"
+            src="image"
           />
-        </v-carousel>
+        </v-carousel> -->
 
         <div class="text-contents pa-4">
-          <nuxt-link
+          <!-- <nuxt-link
             :to="`/${recommend.node.userId}/status/${recommend.node.id}`"
             class="text-decoration-none d-flex"
           >
             <h3>{{ recommend.node.title }}</h3>
           </nuxt-link>
-          <p>{{ recommend.node.detail }}</p>
+          <p>{{ recommend.node.detail }}</p> -->
           <div class="d-flex mt-8">
             <p class="text-caption">
               {{ `${getTimePeriod(recommend.node.createdAt)}日前` }}
@@ -156,6 +194,15 @@ recommends.value = result
         </div>
       </div>
     </div>
+    <div class="open-button">
+      <v-btn
+        color="primary"
+        icon="mdi-plus"
+        size="x-large"
+        @click="isOpenedCreateRecommendDialog = true"
+      />
+    </div>
+    <CreateRecommendDialog v-model="isOpenedCreateRecommendDialog" />
   </div>
 </template>
 
@@ -186,5 +233,16 @@ recommends.value = result
 
 .v-select {
   width: 100% !important;
+}
+
+.open-button {
+  position: fixed;
+  bottom: -15px;
+  left: 90%;
+  transform: translate(-50%, -50%);
+}
+
+.recommend-image {
+  width: 100%;
 }
 </style>
