@@ -15,6 +15,7 @@ declare module '@nuxt/schema' {
       supabaseUrl: string
       supabaseKey: string
       graphqlUrl: string
+      supabaseStorageUrl: string
     }
   }
 }

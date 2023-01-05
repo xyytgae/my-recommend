@@ -53,7 +53,8 @@ export default defineNuxtConfig({
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabaseKey: process.env.SUPABASE_KEY,
-      graphqlUrl: process.env.GRAPHQL_URL
+      graphqlUrl: process.env.GRAPHQL_URL,
+      supabaseStorageUrl: process.env.SUPABASE_STORAGE_URL
     }
   },
 
