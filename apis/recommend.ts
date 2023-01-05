@@ -10,11 +10,24 @@ export const getRecommends = gql`
         node {
           id
           createdAt
-          title
-          detail
           likesCount
           userId
-          images
+          imagesCollection {
+            edges {
+              node {
+                hashtagsCollection {
+                  edges {
+                    node {
+                      text
+                      x
+                      y
+                    }
+                  }
+                }
+                url
+              }
+            }
+          }
           categoryId
           user {
             id
@@ -26,7 +39,38 @@ export const getRecommends = gql`
     }
   }
 `
-export const useRecommend = () => ({
+export const CreateRecommend = gql`
+  mutation ($objects: [RecommendsInsertInput!]!) {
+    insertIntoRecommendsCollection(objects: $objects) {
+      affectedCount
+      records {
+        id
+      }
+    }
+  }
+`
+export const CreateImage = gql`
+  mutation ($objects: [ImagesInsertInput!]!) {
+    insertIntoImagesCollection(objects: $objects) {
+      affectedCount
+      records {
+        id
+      }
+    }
+  }
+`
+export const CreateHashTag = gql`
+  mutation ($objects: [HashtagsInsertInput!]!) {
+    insertIntoHashtagsCollection(objects: $objects) {
+      affectedCount
+      records {
+        id
+      }
+    }
+  }
+`
+
+export const useRecommend = {
   async getRecommends({
     orderBy
   }: QueryRecommendsCollectionArgs): Promise<GetRecommends> {
@@ -36,7 +80,14 @@ export const useRecommend = () => ({
         orderBy
       }
     })
-    console.log(data.value.recommendsCollection.edges)
-    return data.value.recommendsCollection.edges
+    if (
+      data.value &&
+      data.value.recommendsCollection &&
+      data.value.recommendsCollection.edges
+    ) {
+      return data.value.recommendsCollection.edges
+    } else {
+      return []
+    }
   }
-})
+}
