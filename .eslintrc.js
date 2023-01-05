@@ -12,7 +12,8 @@ module.exports = {
     'eslint:recommended',
     'plugin:vue/vue3-essential',
     'plugin:@typescript-eslint/recommended',
-    '@nuxtjs/eslint-config-typescript'
+    '@nuxtjs/eslint-config-typescript',
+    'prettier'
   ],
   plugins: ['vue', '@typescript-eslint'],
   rules: {
