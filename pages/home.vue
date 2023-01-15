@@ -5,6 +5,8 @@ import { GetRecommends, useRecommend } from '~/apis/recommend'
 import { ref, useRuntimeConfig } from '#imports'
 import { OrderByDirection } from '~/src/gql/graphql'
 import { isOpenedCreateRecommendDialog } from '~~/fragments/CreateRecommendDialog.vue'
+import { isOpenedLoginDialog } from '~~/fragments/LoginDialog.vue'
+import { useUserStore } from '~/store/user'
 
 // const CATEGORIES: Readonly<Category[]> = [
 //   { text: '全て', id: 100 },
@@ -30,6 +32,7 @@ const SORTS: Readonly<Sort[]> = [
 // const router = useRouter()
 const { getRecommends } = useRecommend
 const config = useRuntimeConfig()
+const store = useUserStore()
 
 const recommends = ref<GetRecommends>([])
 
@@ -38,6 +41,14 @@ const recommends = ref<GetRecommends>([])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
 
+const openCreateRecommendDialog = () => {
+  const userId = store.getterUserId
+  if (userId) {
+    isOpenedCreateRecommendDialog.value = true
+  } else {
+    isOpenedLoginDialog.value = true
+  }
+}
 /**
  * カテゴリ取得
  * @param categoryId
@@ -91,8 +102,10 @@ const getTimePeriod = (createdAt: GetRecommends[0]['node']['createdAt']) => {
 //   variables: { orderBy: selectedSort.value.value }
 // })
 
-const result = await getRecommends({ orderBy: selectedSort.value.value })
-recommends.value = result
+// NOTE: await getRecommends() と記述すると2回目以降のfetchでバグる
+getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
+  recommends.value = result
+})
 </script>
 
 <template>
@@ -199,10 +212,11 @@ recommends.value = result
         color="primary"
         icon="mdi-plus"
         size="x-large"
-        @click="isOpenedCreateRecommendDialog = true"
+        @click="openCreateRecommendDialog"
       />
     </div>
     <CreateRecommendDialog v-model="isOpenedCreateRecommendDialog" />
+    <LoginDialog v-model="isOpenedLoginDialog" />
   </div>
 </template>
 
