@@ -16,7 +16,7 @@ const config: CodegenConfig = {
       }
     }
   ],
-  documents: ['src/**/*.vue'],
+  documents: 'graphql/**/*.ts',
   ignoreNoDocuments: true,
   generates: {
     './src/gql/': {
@@ -24,7 +24,10 @@ const config: CodegenConfig = {
       config: {
         useTypeImports: true
       },
-      plugins: []
+      plugins: [],
+      presetConfig: {
+        gqlTagName: 'gql'
+      }
     }
   }
 }
