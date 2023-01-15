@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   buildModules: [],
 
   // Modules: https://go.nuxtjs.dev/config-modules
-  modules: ['@nuxtjs/supabase'],
+  modules: ['@nuxtjs/supabase', '@pinia/nuxt'],
 
   supabase: {
     url: process.env.SUPABASE_URL,
@@ -60,6 +60,11 @@ export default defineNuxtConfig({
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    transpile: ['vuetify', '@urql/vue']
+    transpile: [
+      'vuetify',
+      '@urql/vue',
+      '@apollo/client',
+      'ts-invariant/process'
+    ]
   }
 })
