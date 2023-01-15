@@ -2,7 +2,14 @@
 import { useNuxtApp } from '#app'
 import { v4 as uuidv4 } from 'uuid'
 import { useClientHandle } from '@urql/vue'
-import { ref, reactive, nextTick, watch, useRuntimeConfig } from '#imports'
+import {
+  ref,
+  reactive,
+  nextTick,
+  watch,
+  useRuntimeConfig,
+  computed
+} from '#imports'
 import { CreateRecommend, CreateImage, CreateHashTag } from '~/apis/recommend'
 import {
   ImagesInsertInput,
@@ -11,6 +18,7 @@ import {
 } from '~/src/gql/graphql'
 import { getRateToOneDecimalPlace } from '~/modules/getRateToOneDecimalPlace'
 import { WrapRequired } from '~/types/common'
+import { useUserStore } from '~/store/user'
 
 export const isOpenedCreateRecommendDialog = ref(false)
 </script>
@@ -38,6 +46,7 @@ const config = useRuntimeConfig()
 
 const { $supabase } = useNuxtApp()
 const urql = useClientHandle()
+const store = useUserStore()
 
 const imageInputRef = ref<HTMLInputElement>()
 const textMetricsRef = ref<HTMLSpanElement>()
@@ -54,6 +63,9 @@ const provisionalPosition = reactive<ProvisionalPosition>({
   x: null,
   y: null
 })
+
+// NOTE: nullの場合にそもそもダイアログを開けないのでアサーション
+const userId = computed(() => store.getterUserId)
 
 const closeDialog = () => {
   emit('update:modelValue', false)
@@ -165,8 +177,7 @@ const removeHashtag = (removedIndex: number) => {
 const createRecommend = async () => {
   const object: RecommendsInsertInput = {
     categoryId: '',
-    // TODO: userId取得処理実装
-    userId: ''
+    userId: userId.value
   }
 
   // NOTE: mutation実行処理切り分けたいがurqlの仕様上不可能？
