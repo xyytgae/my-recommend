@@ -9,21 +9,42 @@ DROP TABLE IF EXISTS public.images CASCADE;
 
 DROP TABLE IF EXISTS public.hashtags CASCADE;
 
+DROP FUNCTION IF EXISTS handle_new_user CASCADE;
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp" WITH SCHEMA extensions;
 
 COMMENT ON SCHEMA public IS '@graphql({"inflect_names": true})';
 
 CREATE TABLE public.users (
-  id uuid NOT NULL DEFAULT uuid_generate_v4 (),
+  id uuid REFERENCES auth.users NOT NULL DEFAULT uuid_generate_v4 (),
   updated_at timestamp with time zone,
   user_name text UNIQUE,
+  name text,
   avatar_url text,
   twitter_url text,
   instagram_url text,
+  email text,
   PRIMARY KEY (id),
   -- FOREIGN KEY(id) REFERENCES auth.public.users(id),
   CONSTRAINT user_name_length CHECK (CHAR_LENGTH(user_name) >= 3)
 );
+
+CREATE OR REPLACE FUNCTION public.handle_new_user ()
+  RETURNS TRIGGER
+  AS $$
+BEGIN
+  INSERT INTO public.users (id, email)
+    VALUES (NEW.id, NEW.email);
+  RETURN new;
+END;
+$$
+LANGUAGE plpgsql
+SECURITY DEFINER;
+
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.handle_new_user ();
 
 CREATE TABLE public.recommends (
   id uuid NOT NULL DEFAULT uuid_generate_v4 (),

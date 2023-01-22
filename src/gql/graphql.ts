@@ -1,4 +1,5 @@
 /* eslint-disable */
+import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core'
 export type Maybe<T> = T | null
 export type InputMaybe<T> = Maybe<T>
 export type Exact<T extends { [key: string]: unknown }> = {
@@ -697,9 +698,11 @@ export type UuidFilter = {
 export type Users = Node & {
   __typename?: 'Users'
   avatarUrl?: Maybe<Scalars['String']>
+  email?: Maybe<Scalars['String']>
   id: Scalars['UUID']
   instagramUrl?: Maybe<Scalars['String']>
   likesCollection?: Maybe<LikesConnection>
+  name?: Maybe<Scalars['String']>
   /** Globally Unique Record Identifier */
   nodeId: Scalars['ID']
   recommendsCollection?: Maybe<RecommendsConnection>
@@ -748,8 +751,10 @@ export type UsersEdge = {
 
 export type UsersFilter = {
   avatarUrl?: InputMaybe<StringFilter>
+  email?: InputMaybe<StringFilter>
   id?: InputMaybe<UuidFilter>
   instagramUrl?: InputMaybe<StringFilter>
+  name?: InputMaybe<StringFilter>
   nodeId?: InputMaybe<IdFilter>
   twitterUrl?: InputMaybe<StringFilter>
   updatedAt?: InputMaybe<DatetimeFilter>
@@ -758,8 +763,10 @@ export type UsersFilter = {
 
 export type UsersInsertInput = {
   avatarUrl?: InputMaybe<Scalars['String']>
+  email?: InputMaybe<Scalars['String']>
   id?: InputMaybe<Scalars['UUID']>
   instagramUrl?: InputMaybe<Scalars['String']>
+  name?: InputMaybe<Scalars['String']>
   twitterUrl?: InputMaybe<Scalars['String']>
   updatedAt?: InputMaybe<Scalars['Datetime']>
   userName?: InputMaybe<Scalars['String']>
@@ -775,8 +782,10 @@ export type UsersInsertResponse = {
 
 export type UsersOrderBy = {
   avatarUrl?: InputMaybe<OrderByDirection>
+  email?: InputMaybe<OrderByDirection>
   id?: InputMaybe<OrderByDirection>
   instagramUrl?: InputMaybe<OrderByDirection>
+  name?: InputMaybe<OrderByDirection>
   twitterUrl?: InputMaybe<OrderByDirection>
   updatedAt?: InputMaybe<OrderByDirection>
   userName?: InputMaybe<OrderByDirection>
@@ -784,8 +793,10 @@ export type UsersOrderBy = {
 
 export type UsersUpdateInput = {
   avatarUrl?: InputMaybe<Scalars['String']>
+  email?: InputMaybe<Scalars['String']>
   id?: InputMaybe<Scalars['UUID']>
   instagramUrl?: InputMaybe<Scalars['String']>
+  name?: InputMaybe<Scalars['String']>
   twitterUrl?: InputMaybe<Scalars['String']>
   updatedAt?: InputMaybe<Scalars['Datetime']>
   userName?: InputMaybe<Scalars['String']>
@@ -798,3 +809,129 @@ export type UsersUpdateResponse = {
   /** Array of records impacted by the mutation */
   records: Array<Users>
 }
+
+export type GetUserQueryVariables = Exact<{
+  filter: UsersFilter
+  first: Scalars['Int']
+}>
+
+export type GetUserQuery = {
+  __typename?: 'Query'
+  usersCollection?: {
+    __typename?: 'UsersConnection'
+    edges: Array<{
+      __typename?: 'UsersEdge'
+      node: {
+        __typename?: 'Users'
+        id: any
+        avatarUrl?: string | null
+        name?: string | null
+        email?: string | null
+      }
+    }>
+  } | null
+}
+
+export const GetUserDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetUser' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'filter' }
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UsersFilter' }
+            }
+          }
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'first' }
+          },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'usersCollection' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'filter' }
+                }
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'first' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'first' }
+                }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'edges' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'node' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'id' }
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'avatarUrl' }
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'name' }
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'email' }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>
