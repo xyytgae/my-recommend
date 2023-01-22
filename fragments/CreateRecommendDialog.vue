@@ -265,7 +265,7 @@ watch(
           </v-btn>
         </v-toolbar-items>
       </v-toolbar>
-      <v-card-text>
+      <v-card-text class="pa-0 ma-8">
         <div
           v-if="imageSrc"
           class="display-image mx-auto"
@@ -364,99 +364,11 @@ watch(
   </v-dialog>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import '~/assets/styles/recommend.scss';
+
 .v-dialog {
   max-width: 720px;
   height: auto;
-}
-
-.display-image {
-  position: relative !important;
-  width: fit-content;
-  font-size: 1.8vmin;
-}
-
-.display-image img {
-  max-width: 100%;
-  // NOTE: 親要素にheightを合わせるため指定
-  display: block;
-  max-height: 720px;
-  cursor: pointer;
-  user-select: none;
-}
-
-.image-cancel-button {
-  position: absolute !important;
-  top: 5px;
-  left: 5px;
-}
-
-.hashtag {
-  position: absolute;
-  transition: transform 0.3s ease;
-  background-color: skyblue;
-  color: white;
-  border-radius: 5px;
-  max-width: 100%;
-  display: inline-block;
-}
-
-.container,
-.input-box input,
-#text-metrics {
-  font: inherit;
-}
-
-.container {
-  position: absolute;
-  // transition: transform 0.3s ease;
-  background-color: transparent;
-  max-width: 100%;
-}
-
-#text-metrics {
-  position: absolute;
-  visibility: hidden;
-}
-
-.input-box {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  border: 1px solid #a0a0a0;
-  border-radius: 5px;
-  overflow: hidden;
-}
-
-.input-box .prefix {
-  color: #999;
-  letter-spacing: 0;
-}
-
-.input-box input {
-  flex-grow: 1;
-  background: #fff;
-  border: none;
-  outline: none;
-  white-space: nowrap;
-  min-width: 16px;
-}
-
-.input-box:focus-within {
-  border-color: #777;
-}
-
-.hashtag-cancel-button {
-  position: absolute !important;
-  width: 4vw !important;
-  height: 4vw !important;
-  max-width: 24px !important;
-  max-height: 24px !important;
-  top: -30%;
-  right: -0.5rem;
-}
-
-.hashtag-cancel-button .v-icon {
-  font-size: 0.75em !important;
 }
 </style>

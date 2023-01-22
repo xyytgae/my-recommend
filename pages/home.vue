@@ -139,7 +139,7 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
       <div
         v-for="recommend in recommends"
         :key="recommend.node.id"
-        class="recommend my-8 mx-4 mx-auto"
+        class="recommend my-8 mx-auto"
       >
         <template
           v-if="
@@ -150,6 +150,7 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
           <div
             v-for="(image, index) in recommend.node.imagesCollection.edges"
             :key="index"
+            class="display-image mx-auto"
           >
             <img
               class="recommend-image"
@@ -162,12 +163,13 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
               "
             >
               <div
-                v-for="(hashtag, index) in image.node.hashtagsCollection.edges"
-                :key="index"
+                v-for="(hashtag, hashtagIndex) in image.node.hashtagsCollection
+                  .edges"
+                :key="hashtagIndex"
+                :style="{ left: hashtag.node.x, top: hashtag.node.y }"
+                class="hashtag px-2 py-1"
               >
-                <p>ハッシュタグ：{{ hashtag.node.text }}</p>
-                <p>x：{{ hashtag.node.x }}</p>
-                <p>y：{{ hashtag.node.y }}</p>
+                {{ `#${hashtag.node.text}` }}
               </div>
             </template>
           </div>
@@ -221,6 +223,8 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
 </template>
 
 <style lang="scss" scoped>
+@import '~/assets/styles/recommend.scss';
+
 .carousel-image {
   border-radius: 16px !important;
 }
@@ -254,9 +258,5 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
   bottom: -15px;
   left: 90%;
   transform: translate(-50%, -50%);
-}
-
-.recommend-image {
-  width: 100%;
 }
 </style>
