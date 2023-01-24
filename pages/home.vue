@@ -230,7 +230,7 @@ getRecommends({ orderBy: selectedSort.value.value }).then((result) => {
 }
 .recommend {
   border: 1px solid silver;
-  border-radius: 16px;
+  // border-radius: 16px;
   max-width: 480px;
 }
 
