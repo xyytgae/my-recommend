@@ -132,6 +132,10 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
+      _is_liked_by_user: {
+        Args: { argument_user_id: string; argument_recommend_id: string }
+        Returns: boolean
+      }
       _likes_count: {
         Args: { rec: unknown }
         Returns: number
@@ -139,18 +143,6 @@ export interface Database {
       graphql: {
         Args: { operationName: string; query: string; variables: Json }
         Returns: Json
-      }
-      hashtag: {
-        Args: { rec: unknown }
-        Returns: Record<string, unknown>[]
-      }
-      image: {
-        Args: { rec: unknown }
-        Returns: Record<string, unknown>[]
-      }
-      user: {
-        Args: { rec: unknown }
-        Returns: Record<string, unknown>[]
       }
     }
     Enums: {
