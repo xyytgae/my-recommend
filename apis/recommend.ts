@@ -1,7 +1,6 @@
-import { gql, useQuery } from '@urql/vue'
-import { Query, QueryRecommendsCollectionArgs } from '~/src/gql/graphql'
-
-export type GetRecommends = NonNullable<Query['recommendsCollection']>['edges']
+import { gql } from '@urql/vue'
+import { Database } from '../types/supabase'
+import { useSupabaseClient } from '#imports'
 
 export const getRecommends = gql`
   query ($orderBy: Array!) {
@@ -71,23 +70,59 @@ export const CreateHashTag = gql`
 `
 
 export const useRecommend = {
-  async getRecommends({
-    orderBy
-  }: QueryRecommendsCollectionArgs): Promise<GetRecommends> {
-    const { data } = await useQuery({
-      query: getRecommends,
-      variables: {
-        orderBy
+  getRecommends: async (userId?: string) => {
+    const client = useSupabaseClient<Database>()
+    const result = await client
+      .from('recommends')
+      .select(
+        `*, _likes_count, user: user_id(*), images(id, url, recommend_id, hashtags(*))`
+      )
+
+    if (result.data === null)
+      return {
+        ...result,
+        data: []
       }
-    })
-    if (
-      data.value &&
-      data.value.recommendsCollection &&
-      data.value.recommendsCollection.edges
-    ) {
-      return data.value.recommendsCollection.edges
+
+    if (result.data && result.data.length > 0 && userId) {
+      const recommendsWithLiked = await Promise.all(
+        result.data.map(async (recommend) => {
+          const isLiked = await client.rpc('_is_liked_by_user', {
+            argument_user_id: userId,
+            argument_recommend_id: recommend.id
+          })
+          return {
+            ...recommend,
+            isLiked: isLiked.data === null ? false : isLiked.data
+          }
+        })
+      )
+
+      return {
+        ...result,
+        data: recommendsWithLiked
+      }
     } else {
-      return []
+      const recommendsWithLiked = result.data?.map((rec) => ({
+        ...rec,
+        isLiked: false
+      }))
+      return {
+        ...result,
+        data: recommendsWithLiked
+      }
     }
   }
+  // check: async (userId: string, recommendId: string) => {
+  //   const client = useSupabaseClient<Database>()
+  //   const result = await client.rpc('_is_liked_by_user', {
+  //     argument_user_id: userId,
+  //     argument_recommend_id: recommendId
+  //   })
+  //   return result.data
+  // }
 }
+
+export type GetRecommends = Awaited<
+  ReturnType<typeof useRecommend.getRecommends>
+>
