@@ -810,6 +810,30 @@ export type UsersUpdateResponse = {
   records: Array<Users>
 }
 
+export type CreateLikeMutationVariables = Exact<{
+  objects: Array<LikesInsertInput> | LikesInsertInput
+}>
+
+export type CreateLikeMutation = {
+  __typename?: 'Mutation'
+  insertIntoLikesCollection?: {
+    __typename?: 'LikesInsertResponse'
+    affectedCount: number
+  } | null
+}
+
+export type DeleteLikeMutationVariables = Exact<{
+  filter: LikesFilter
+}>
+
+export type DeleteLikeMutation = {
+  __typename?: 'Mutation'
+  deleteFromLikesCollection: {
+    __typename?: 'LikesDeleteResponse'
+    affectedCount: number
+  }
+}
+
 export type GetUserQueryVariables = Exact<{
   filter: UsersFilter
   first: Scalars['Int']
@@ -832,6 +856,120 @@ export type GetUserQuery = {
   } | null
 }
 
+export const CreateLikeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'CreateLike' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'objects' }
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'ListType',
+              type: {
+                kind: 'NonNullType',
+                type: {
+                  kind: 'NamedType',
+                  name: { kind: 'Name', value: 'LikesInsertInput' }
+                }
+              }
+            }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'insertIntoLikesCollection' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'objects' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'objects' }
+                }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'affectedCount' }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CreateLikeMutation, CreateLikeMutationVariables>
+export const DeleteLikeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteLike' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'filter' }
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'LikesFilter' }
+            }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteFromLikesCollection' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filter' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'filter' }
+                }
+              }
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'affectedCount' }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DeleteLikeMutation, DeleteLikeMutationVariables>
 export const GetUserDocument = {
   kind: 'Document',
   definitions: [

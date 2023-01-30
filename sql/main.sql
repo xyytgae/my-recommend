@@ -86,85 +86,126 @@ CREATE TABLE public.likes (
 );
 
 CREATE FUNCTION public._likes_count (rec public.recommends)
-  RETURNS integer IMMUTABLE STRICT
-  LANGUAGE SQL
-  AS '
-SELECT
-  count(*)
-from
-  public.likes
-where
-  recommend_id = rec.id '
-;
-
-CREATE FUNCTION public.user (rec public.recommends)
-  RETURNS SETOF record AS $$
+  RETURNS integer
+  AS $$
 BEGIN
-  RETURN query
-  SELECT
-    *
-  FROM
-    public.users
-  WHERE
-    id = rec.user_id;
+  RETURN (
+    SELECT
+      COUNT(*)
+    FROM
+      public.likes
+    WHERE
+      recommend_id = rec.id);
 END;
-  $$
-  LANGUAGE plpgsql;
-  CREATE FUNCTION public.image (rec public.recommends )
-    RETURNS SETOF record AS $$
-    BEGIN
-      RETURN query
-      SELECT
-        *
-      FROM
-        public.images
-      WHERE
-        recommend_id = rec.id;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION public._is_liked_by_user (argument_user_id uuid, argument_recommend_id uuid)
+  RETURNS boolean
+  AS $$
+BEGIN
+  RETURN EXISTS (
+    SELECT
+      *
+    FROM
+      public.likes
+    WHERE
+      user_id = argument_user_id
+      AND recommend_id = argument_recommend_id);
 END;
-  $$
-  LANGUAGE plpgsql;
-  CREATE FUNCTION public.hashtag (rec public.images )
-    RETURNS SETOF record AS $$
-    BEGIN
-      RETURN query
-      SELECT
-        *
-      FROM
-        public.hashtags
-      WHERE
-        image_id = rec.id;
-END;
-  $$
-  LANGUAGE plpgsql;
-  -- RLSを有効化
-  ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE public.recommends ENABLE ROW LEVEL SECURITY;
-  ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
-  -- ポリシーを作成
-  CREATE POLICY "usersを誰でもアクセスできる" ON public.users
-    FOR SELECT
-      USING (TRUE );
-  CREATE POLICY "usersを誰でも作成可能" ON public.users
-    FOR INSERT
-      WITH CHECK (TRUE );
-  CREATE POLICY "recommendsを誰でもアクセスできる" ON public.recommends
-    FOR SELECT
-      USING (TRUE );
-  CREATE POLICY "recommendsを誰でも作成可能" ON public.recommends
-    FOR INSERT
-      WITH CHECK (TRUE );
-  CREATE POLICY "likesを誰でもアクセスできる" ON public.likes
-    FOR SELECT
-      USING (TRUE );
-  CREATE POLICY "imagesを誰でもアクセスできる" ON public.images
-    FOR SELECT
-      USING (TRUE );
-  CREATE POLICY "imagesを誰でも作成可能" ON public.images
-    FOR INSERT
-      WITH CHECK (TRUE );
-  CREATE POLICY "hashtagsを誰でもアクセスできる" ON public.hashtags
-    FOR SELECT
-      USING (TRUE );
-  CREATE POLICY "hashtagsを誰でも作成可能" ON public.hashtags
-    FOR INSERT
-      WITH CHECK (TRUE );
+$$
+LANGUAGE plpgsql;
+
+-- CREATE FUNCTION public.user (rec public.recommends)
+--   RETURNS SETOF record
+--   AS $$
+-- BEGIN
+--   RETURN query
+--   SELECT
+--     *
+--   FROM
+--     public.users
+--   WHERE
+--     id = rec.user_id;
+-- END;
+-- $$
+-- LANGUAGE plpgsql;
+--   CREATE FUNCTION public.image (rec public.recommends )
+--     RETURNS SETOF record AS $$
+--     BEGIN
+--       RETURN query
+--       SELECT
+--         *
+--       FROM
+--         public.images
+--       WHERE
+--         recommend_id = rec.id;
+-- END;
+--   $$
+--   LANGUAGE plpgsql;
+-- CREATE FUNCTION public.hashtag (rec public.images)
+--   RETURNS SETOF record
+--   AS $$
+-- BEGIN
+--   RETURN query
+--   SELECT
+--     *
+--   FROM
+--     public.hashtags
+--   WHERE
+--     image_id = rec.id;
+-- END;
+-- $$
+-- LANGUAGE plpgsql;
+-- RLSを有効化
+ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.recommends ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE public.likes ENABLE ROW LEVEL SECURITY;
+
+-- ポリシーを作成
+CREATE POLICY "usersを誰でもアクセスできる" ON public.users
+  FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "usersを誰でも作成可能" ON public.users
+  FOR INSERT
+    WITH CHECK (TRUE);
+
+CREATE POLICY "recommendsを誰でもアクセスできる" ON public.recommends
+  FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "recommendsを誰でも作成可能" ON public.recommends
+  FOR INSERT
+    WITH CHECK (TRUE);
+
+CREATE POLICY "likesを誰でもアクセスできる" ON public.likes
+  FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "likesを誰でも作成可能" ON public.likes
+  FOR INSERT
+    USING (TRUE);
+
+CREATE POLICY "likesを誰でも削除可能" ON public.likes
+  FOR DELETE
+    USING (TRUE);
+
+CREATE POLICY "imagesを誰でもアクセスできる" ON public.images
+  FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "imagesを誰でも作成可能" ON public.images
+  FOR INSERT
+    WITH CHECK (TRUE);
+
+CREATE POLICY "hashtagsを誰でもアクセスできる" ON public.hashtags
+  FOR SELECT
+    USING (TRUE);
+
+CREATE POLICY "hashtagsを誰でも作成可能" ON public.hashtags
+  FOR INSERT
+    WITH CHECK (TRUE);
+
