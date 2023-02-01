@@ -1,5 +1,6 @@
 import { gql } from '@urql/vue'
 import { Database } from '../types/supabase'
+import { Tables, Functions } from '~/types/database'
 import { useSupabaseClient } from '#imports'
 
 export const getRecommends = gql`
@@ -123,6 +124,20 @@ export const useRecommend = {
   // }
 }
 
-export type GetRecommends = Awaited<
-  ReturnType<typeof useRecommend.getRecommends>
->
+type GetRecommends = Awaited<ReturnType<typeof useRecommend.getRecommends>>
+export type GetRecommendsResult = Omit<GetRecommends, 'data'>
+
+// TODO: 自動的に型を生成するようにしたい
+// NOTE: VSCODE上で正しく型を取得できないためrecommends直下のkeyは直打ち
+export type GetRecommendsData = {
+  id: Tables<'recommends'>['id']
+  created_at: Tables<'recommends'>['created_at']
+  user_id: Tables<'recommends'>['user_id']
+  category_id: Tables<'recommends'>['category_id']
+  user: Tables<'users'>
+  images: (Omit<Tables<'images'>, 'created_at'> & {
+    hashtags: Tables<'hashtags'>[]
+  })[]
+  _likes_count: Functions<'_likes_count'>
+  isLiked: boolean
+}[]

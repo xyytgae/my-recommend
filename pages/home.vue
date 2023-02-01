@@ -2,7 +2,7 @@
 import dayjs from 'dayjs'
 import { useClientHandle } from '@urql/vue'
 import { Sort } from '~/types/index'
-import { GetRecommends, useRecommend } from '~/apis/recommend'
+import { GetRecommendsData, useRecommend } from '~/apis/recommend'
 import { ref, useRuntimeConfig, computed, useSupabaseUser } from '#imports'
 import {
   OrderByDirection,
@@ -41,7 +41,7 @@ const config = useRuntimeConfig()
 const store = useUserStore()
 const { useMutation } = useClientHandle()
 
-const recommends = ref<GetRecommends['data']>([])
+const recommends = ref<GetRecommendsData>([])
 
 // NOTE: reactiveだとバグる
 // const selectedCategory = ref<Category>(CATEGORIES[0])
@@ -92,7 +92,7 @@ const openCreateRecommendDialog = () => {
 //   selectedSort.value = foundSort ?? SORTS[0]
 // }
 
-const handleLike = async (recommendId: GetRecommends['data'][0]['id']) => {
+const handleLike = async (recommendId: GetRecommendsData[0]['id']) => {
   try {
     const objects: CreateLikeMutationVariables['objects'] = {
       recommendId,
@@ -114,7 +114,7 @@ const handleLike = async (recommendId: GetRecommends['data'][0]['id']) => {
   }
 }
 
-const cancelLike = async (recommendId: GetRecommends['data'][0]['id']) => {
+const cancelLike = async (recommendId: GetRecommendsData[0]['id']) => {
   try {
     const filter: DeleteLikeMutationVariables['filter'] = {
       recommendId: {
@@ -143,7 +143,7 @@ const cancelLike = async (recommendId: GetRecommends['data'][0]['id']) => {
  * ◯日前取得
  * @param createdAt
  */
-const getTimePeriod = (createdAt: GetRecommends['data'][0]['created_at']) => {
+const getTimePeriod = (createdAt: GetRecommendsData[0]['created_at']) => {
   const today = dayjs()
   return today.diff(createdAt, 'day')
 }
@@ -161,7 +161,7 @@ const getTimePeriod = (createdAt: GetRecommends['data'][0]['created_at']) => {
 // https://github.com/xyytgae/my-recommend/issues/40
 const userId = useSupabaseUser().value?.id
 getRecommends(userId).then((result) => {
-  recommends.value = result.data
+  recommends.value = result.data as GetRecommendsData
 })
 </script>
 
