@@ -128,6 +128,7 @@ type GetRecommends = Awaited<ReturnType<typeof useRecommend.getRecommends>>
 export type GetRecommendsResult = Omit<GetRecommends, 'data'>
 
 // TODO: 自動的に型を生成するようにしたい
+// https://github.com/xyytgae/my-recommend/issues/46
 // NOTE: VSCODE上で正しく型を取得できないためrecommends直下のkeyは直打ち
 export type GetRecommendsData = {
   id: Tables<'recommends'>['id']
