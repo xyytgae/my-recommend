@@ -187,7 +187,7 @@ CREATE POLICY "likesを誰でもアクセスできる" ON public.likes
 
 CREATE POLICY "likesを誰でも作成可能" ON public.likes
   FOR INSERT
-    USING (TRUE);
+    WITH CHECK (TRUE);
 
 CREATE POLICY "likesを誰でも削除可能" ON public.likes
   FOR DELETE
