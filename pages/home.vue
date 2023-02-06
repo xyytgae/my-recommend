@@ -2,10 +2,13 @@
 import dayjs from 'dayjs'
 import { useClientHandle } from '@urql/vue'
 import { Sort } from '~/types/index'
-import { GetRecommendsData, useRecommend } from '~/apis/recommend'
+import {
+  GetRecommendsData,
+  useRecommend,
+  DataManagement
+} from '~/apis/recommend'
 import { ref, useRuntimeConfig, computed, useSupabaseUser } from '#imports'
 import {
-  OrderByDirection,
   CreateLikeMutationVariables,
   DeleteLikeMutationVariables
 } from '~/src/gql/graphql'
@@ -29,14 +32,14 @@ import { CreateLike, DeleteLike } from '~/graphql/like'
 // ] as const
 
 const SORTS: Readonly<Sort[]> = [
-  { text: '新着順', value: [{ createdAt: OrderByDirection.AscNullsLast }] },
-  { text: '投稿順', value: [{ createdAt: OrderByDirection.DescNullsLast }] }
+  { text: '新着順', order: { ascending: false }, column: 'created_at' },
+  { text: '投稿順', order: { ascending: true }, column: 'created_at' }
   // { text: 'おすすめ', value: [{ createdAt: OrderByDirection.DescNullsLast }] },
 ]
 
 // const route = useRoute()
 // const router = useRouter()
-const { getRecommends } = useRecommend
+const { getList } = useRecommend
 const config = useRuntimeConfig()
 const store = useUserStore()
 const { useMutation } = useClientHandle()
@@ -47,7 +50,19 @@ const recommends = ref<GetRecommendsData>([])
 // const selectedCategory = ref<Category>(CATEGORIES[0])
 // const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
+const filteredWord = ref<string>('')
+
 const currentUserId = computed(() => store.getterUserId)
+const dataManagement = computed<DataManagement>(() => ({
+  sortedItem: {
+    column: selectedSort.value.column,
+    order: selectedSort.value.order
+  },
+  filteredItem: {
+    column: 'images.hashtags.text',
+    word: filteredWord.value
+  }
+}))
 
 const openCreateRecommendDialog = () => {
   if (currentUserId.value) {
@@ -148,21 +163,25 @@ const getTimePeriod = (createdAt: GetRecommendsData[0]['created_at']) => {
   return today.diff(createdAt, 'day')
 }
 
+const getRecommends = () => {
+  // TODO: 修正
+  // https://github.com/xyytgae/my-recommend/issues/40
+  const userId = useSupabaseUser().value?.id
+  getList(dataManagement.value, userId).then((result) => {
+    recommends.value = result.data as GetRecommendsData
+  })
+}
+
 /**
  * init
  */
 // const result = await urql.useQuery({
-//   query: getRecommends,
+//   query: getList,
 //   variables: { orderBy: selectedSort.value.value }
 // })
 
 // NOTE: await getRecommends() と記述すると2回目以降のfetchでバグる
-// TODO: 修正
-// https://github.com/xyytgae/my-recommend/issues/40
-const userId = useSupabaseUser().value?.id
-getRecommends(userId).then((result) => {
-  recommends.value = result.data as GetRecommendsData
-})
+getRecommends()
 </script>
 
 <template>
@@ -190,6 +209,33 @@ getRecommends(userId).then((result) => {
         return-object
       />
     </div> -->
+
+    <!-- TODO: UI修正 -->
+    <!-- https://github.com/xyytgae/my-recommend/issues/56 -->
+    <div class="my-4 text-center item-operation">
+      <v-select
+        v-model="selectedSort"
+        :items="SORTS"
+        item-title="text"
+        class="px-2"
+        full-width
+        filled
+        label="Sort"
+        return-object
+      />
+      <v-text-field
+        v-model="filteredWord"
+        class="px-2"
+        label="Word"
+      />
+
+      <v-btn
+        class="mx-auto text-none"
+        color="primary"
+        @click="getRecommends"
+        >Search</v-btn
+      >
+    </div>
 
     <div>
       <div v-if="recommends.length <= 0">まだ投稿されていません</div>
