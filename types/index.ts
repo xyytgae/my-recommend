@@ -1,4 +1,4 @@
-import { UsersRecommendsCollectionArgs } from '~/src/gql/graphql'
+import { Tables } from '~/types/database'
 
 export type Recommend = {
   id: number
@@ -24,5 +24,14 @@ export type Category = {
 
 export type Sort = {
   text: string
-  value: UsersRecommendsCollectionArgs['orderBy']
+  order: {
+    ascending: boolean
+  }
+  // NOTE: GetRecommendsDataからkeyを取得できないため注意
+  column: keyof Tables<'recommends'>
+}
+
+export type Filter = {
+  column: string
+  word: string
 }
