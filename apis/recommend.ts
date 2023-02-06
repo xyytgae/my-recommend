@@ -2,6 +2,7 @@ import { gql } from '@urql/vue'
 import { Database } from '../types/supabase'
 import { Tables, Functions } from '~/types/database'
 import { useSupabaseClient } from '#imports'
+import { Sort, Filter } from '~/types/index'
 
 export const getRecommends = gql`
   query ($orderBy: Array!) {
@@ -70,14 +71,27 @@ export const CreateHashTag = gql`
   }
 `
 
+export type DataManagement = {
+  sortedItem: Pick<Sort, 'column' | 'order'>
+  filteredItem: Filter
+}
+
 export const useRecommend = {
-  getRecommends: async (userId?: string) => {
+  getList: async (dataManagement: DataManagement, userId?: string) => {
     const client = useSupabaseClient<Database>()
-    const result = await client
+    const { sortedItem, filteredItem } = dataManagement
+    let query = client
       .from('recommends')
       .select(
-        `*, _likes_count, user: user_id(*), images(id, url, recommend_id, hashtags(*))`
+        `*, _likes_count, user: user_id(*), images!inner(id, url, recommend_id, hashtags!inner(*))`
       )
+      .order(sortedItem.column, sortedItem.order)
+
+    if (filteredItem.word) {
+      query = query.filter(filteredItem.column, 'eq', filteredItem.word)
+    }
+    // NOTE: query実行
+    const result = await query
 
     if (result.data === null)
       return {
@@ -124,7 +138,7 @@ export const useRecommend = {
   // }
 }
 
-type GetRecommends = Awaited<ReturnType<typeof useRecommend.getRecommends>>
+type GetRecommends = Awaited<ReturnType<typeof useRecommend.getList>>
 export type GetRecommendsResult = Omit<GetRecommends, 'data'>
 
 // TODO: 自動的に型を生成するようにしたい
