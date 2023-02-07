@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import dayjs from 'dayjs'
 import { useClientHandle } from '@urql/vue'
+import { useNuxtApp } from '#app'
 import { Sort } from '~/types/index'
 import {
   GetRecommendsData,
@@ -43,6 +43,7 @@ const { getList } = useRecommend
 const config = useRuntimeConfig()
 const store = useUserStore()
 const { useMutation } = useClientHandle()
+const { $dayjs } = useNuxtApp()
 
 const recommends = ref<GetRecommendsData>([])
 
@@ -159,7 +160,7 @@ const cancelLike = async (recommendId: GetRecommendsData[0]['id']) => {
  * @param createdAt
  */
 const getTimePeriod = (createdAt: GetRecommendsData[0]['created_at']) => {
-  const today = dayjs()
+  const today = $dayjs()
   return today.diff(createdAt, 'day')
 }
 
@@ -295,9 +296,15 @@ getRecommends()
           </nuxt-link>
           <p>{{ recommend.node.detail }}</p> -->
           <div class="d-flex mt-8">
-            <p class="text-caption my-auto">
+            <time
+              class="text-caption my-auto"
+              :datetime="recommend.created_at"
+              :title="
+                $dayjs(recommend.created_at).tz().format('YYYY/MM/DD HH:mm')
+              "
+            >
               {{ `${getTimePeriod(recommend.created_at)}日前` }}
-            </p>
+            </time>
             <!-- <p>{{ getCategory(recommend.node.categoryId) }}</p> -->
             <v-btn
               v-show="recommend.isLiked"
