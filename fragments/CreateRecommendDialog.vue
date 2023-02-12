@@ -29,6 +29,7 @@ interface Props {
 }
 interface Emits {
   (e: 'update:modelValue', value: boolean): void
+  (e: 'refetch'): void
 }
 
 type Hashtag = WrapRequired<Pick<HashtagsInsertInput, 'text' | 'x' | 'y'>>
@@ -214,6 +215,7 @@ const createHashtag = async (imageId: string) => {
 
   if (!error) {
     emit('update:modelValue', false)
+    emit('refetch')
   }
 }
 

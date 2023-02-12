@@ -296,7 +296,10 @@ getRecommends()
         @click="openCreateRecommendDialog"
       />
     </div>
-    <CreateRecommendDialog v-model="isOpenedCreateRecommendDialog" />
+    <CreateRecommendDialog
+      v-model="isOpenedCreateRecommendDialog"
+      @refetch="getRecommends"
+    />
     <LoginDialog v-model="isOpenedLoginDialog" />
   </div>
 </template>
