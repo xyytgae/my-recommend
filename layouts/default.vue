@@ -12,6 +12,7 @@ const display = useDisplay()
 // NOTE: nullになる可能性があるのでref
 const user = ref<GetUser['data']>(null)
 const isOpenedDrawer = ref(false)
+const isPermanent = ref(display.lgAndUp.value)
 
 const logoutUser = async () => {
   await auth.signOut()
@@ -50,14 +51,16 @@ auth.onAuthStateChange(async (_, session) => {
     console.error(error)
   }
 })
+
+// NOTE: 最初から表示するため
+isOpenedDrawer.value = isPermanent.value
 </script>
 
 <template>
   <v-app>
     <v-navigation-drawer
       v-model="isOpenedDrawer"
-      :temporary="display.mdAndDown.value"
-      :permanent="display.lgAndUp.value"
+      :permanent="isPermanent"
     >
       <template v-if="user && user.id">
         <v-list>
