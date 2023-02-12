@@ -33,6 +33,7 @@ export type BigIntFilter = {
   gt?: InputMaybe<Scalars['BigInt']>
   gte?: InputMaybe<Scalars['BigInt']>
   in?: InputMaybe<Array<Scalars['BigInt']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['BigInt']>
   lte?: InputMaybe<Scalars['BigInt']>
   neq?: InputMaybe<Scalars['BigInt']>
@@ -44,6 +45,7 @@ export type BooleanFilter = {
   gt?: InputMaybe<Scalars['Boolean']>
   gte?: InputMaybe<Scalars['Boolean']>
   in?: InputMaybe<Array<Scalars['Boolean']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Boolean']>
   lte?: InputMaybe<Scalars['Boolean']>
   neq?: InputMaybe<Scalars['Boolean']>
@@ -55,6 +57,7 @@ export type DateFilter = {
   gt?: InputMaybe<Scalars['Date']>
   gte?: InputMaybe<Scalars['Date']>
   in?: InputMaybe<Array<Scalars['Date']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Date']>
   lte?: InputMaybe<Scalars['Date']>
   neq?: InputMaybe<Scalars['Date']>
@@ -66,9 +69,15 @@ export type DatetimeFilter = {
   gt?: InputMaybe<Scalars['Datetime']>
   gte?: InputMaybe<Scalars['Datetime']>
   in?: InputMaybe<Array<Scalars['Datetime']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Datetime']>
   lte?: InputMaybe<Scalars['Datetime']>
   neq?: InputMaybe<Scalars['Datetime']>
+}
+
+export enum FilterIs {
+  NotNull = 'NOT_NULL',
+  Null = 'NULL'
 }
 
 /** Boolean expression comparing fields on type "Float" */
@@ -77,6 +86,7 @@ export type FloatFilter = {
   gt?: InputMaybe<Scalars['Float']>
   gte?: InputMaybe<Scalars['Float']>
   in?: InputMaybe<Array<Scalars['Float']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Float']>
   lte?: InputMaybe<Scalars['Float']>
   neq?: InputMaybe<Scalars['Float']>
@@ -265,6 +275,7 @@ export type IntFilter = {
   gt?: InputMaybe<Scalars['Int']>
   gte?: InputMaybe<Scalars['Int']>
   in?: InputMaybe<Array<Scalars['Int']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Int']>
   lte?: InputMaybe<Scalars['Int']>
   neq?: InputMaybe<Scalars['Int']>
@@ -571,7 +582,6 @@ export type QueryUsersCollectionArgs = {
 
 export type Recommends = Node & {
   __typename?: 'Recommends'
-  categoryId?: Maybe<Scalars['String']>
   createdAt: Scalars['Datetime']
   id: Scalars['UUID']
   imagesCollection?: Maybe<ImagesConnection>
@@ -622,7 +632,6 @@ export type RecommendsEdge = {
 }
 
 export type RecommendsFilter = {
-  categoryId?: InputMaybe<StringFilter>
   createdAt?: InputMaybe<DatetimeFilter>
   id?: InputMaybe<UuidFilter>
   nodeId?: InputMaybe<IdFilter>
@@ -630,7 +639,6 @@ export type RecommendsFilter = {
 }
 
 export type RecommendsInsertInput = {
-  categoryId?: InputMaybe<Scalars['String']>
   createdAt?: InputMaybe<Scalars['Datetime']>
   id?: InputMaybe<Scalars['UUID']>
   userId?: InputMaybe<Scalars['UUID']>
@@ -645,14 +653,12 @@ export type RecommendsInsertResponse = {
 }
 
 export type RecommendsOrderBy = {
-  categoryId?: InputMaybe<OrderByDirection>
   createdAt?: InputMaybe<OrderByDirection>
   id?: InputMaybe<OrderByDirection>
   userId?: InputMaybe<OrderByDirection>
 }
 
 export type RecommendsUpdateInput = {
-  categoryId?: InputMaybe<Scalars['String']>
   createdAt?: InputMaybe<Scalars['Datetime']>
   id?: InputMaybe<Scalars['UUID']>
   userId?: InputMaybe<Scalars['UUID']>
@@ -672,6 +678,7 @@ export type StringFilter = {
   gt?: InputMaybe<Scalars['String']>
   gte?: InputMaybe<Scalars['String']>
   in?: InputMaybe<Array<Scalars['String']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['String']>
   lte?: InputMaybe<Scalars['String']>
   neq?: InputMaybe<Scalars['String']>
@@ -683,6 +690,7 @@ export type TimeFilter = {
   gt?: InputMaybe<Scalars['Time']>
   gte?: InputMaybe<Scalars['Time']>
   in?: InputMaybe<Array<Scalars['Time']>>
+  is?: InputMaybe<FilterIs>
   lt?: InputMaybe<Scalars['Time']>
   lte?: InputMaybe<Scalars['Time']>
   neq?: InputMaybe<Scalars['Time']>
@@ -692,6 +700,7 @@ export type TimeFilter = {
 export type UuidFilter = {
   eq?: InputMaybe<Scalars['UUID']>
   in?: InputMaybe<Array<Scalars['UUID']>>
+  is?: InputMaybe<FilterIs>
   neq?: InputMaybe<Scalars['UUID']>
 }
 
