@@ -50,7 +50,6 @@ CREATE TABLE public.recommends (
   id uuid NOT NULL DEFAULT uuid_generate_v4 (),
   created_at timestamp with time zone DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   user_id uuid,
-  category_id text,
   PRIMARY KEY (id),
   FOREIGN KEY (user_id) REFERENCES public.users (id)
 );
