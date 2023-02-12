@@ -77,19 +77,16 @@ export interface Database {
       }
       recommends: {
         Row: {
-          category_id: string | null
           created_at: string
           id: string
           user_id: string | null
         }
         Insert: {
-          category_id?: string | null
           created_at?: string
           id?: string
           user_id?: string | null
         }
         Update: {
-          category_id?: string | null
           created_at?: string
           id?: string
           user_id?: string | null
@@ -133,19 +130,31 @@ export interface Database {
     }
     Functions: {
       _is_liked_by_user: {
-        Args: { argument_user_id: string; argument_recommend_id: string }
+        Args: {
+          argument_user_id: string
+          argument_recommend_id: string
+        }
         Returns: boolean
       }
       _likes_count: {
-        Args: { rec: unknown }
+        Args: {
+          rec: unknown
+        }
         Returns: number
       }
       graphql: {
-        Args: { operationName: string; query: string; variables: Json }
+        Args: {
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
         Returns: Json
       }
     }
     Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
       [_ in never]: never
     }
   }

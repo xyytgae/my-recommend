@@ -29,7 +29,6 @@ export const getRecommends = gql`
               }
             }
           }
-          categoryId
           user {
             id
             userName
@@ -148,7 +147,6 @@ export type GetRecommendsData = {
   id: Tables<'recommends'>['id']
   created_at: Tables<'recommends'>['created_at']
   user_id: Tables<'recommends'>['user_id']
-  category_id: Tables<'recommends'>['category_id']
   user: Tables<'users'>
   images: (Omit<Tables<'images'>, 'created_at'> & {
     hashtags: Tables<'hashtags'>[]

@@ -176,7 +176,6 @@ const removeHashtag = (removedIndex: number) => {
 
 const createRecommend = async () => {
   const object: RecommendsInsertInput = {
-    categoryId: '',
     userId: userId.value
   }
 

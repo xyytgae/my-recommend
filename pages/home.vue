@@ -17,20 +17,6 @@ import { isOpenedLoginDialog } from '~~/fragments/LoginDialog.vue'
 import { useUserStore } from '~/store/user'
 import { CreateLike, DeleteLike } from '~/graphql/like'
 
-// const CATEGORIES: Readonly<Category[]> = [
-//   { text: '全て', id: 100 },
-//   { text: '芸能人', id: 101 },
-//   { text: 'テレビ・ラジオ', id: 102 },
-//   { text: '音楽', id: 103 },
-//   { text: '映画', id: 104 },
-//   { text: '演劇・ミュージカル', id: 105 },
-//   { text: 'アニメ・漫画', id: 106 },
-//   { text: 'ゲーム', id: 107 },
-//   { text: '趣味', id: 108 },
-//   { text: '本・雑誌', id: 109 },
-//   { text: 'スポーツ', id: 110 }
-// ] as const
-
 const SORTS: Readonly<Sort[]> = [
   { text: '新着順', order: { ascending: false }, column: 'created_at' },
   { text: '投稿順', order: { ascending: true }, column: 'created_at' }
@@ -48,8 +34,6 @@ const { $dayjs } = useNuxtApp()
 const recommends = ref<GetRecommendsData>([])
 
 // NOTE: reactiveだとバグる
-// const selectedCategory = ref<Category>(CATEGORIES[0])
-// const selectedCategory = reactive<Category>({ text: '全て', id: 100 })
 const selectedSort = ref<Sort>(SORTS[0])
 const filteredWord = ref<string>('')
 
@@ -72,25 +56,14 @@ const openCreateRecommendDialog = () => {
     isOpenedLoginDialog.value = true
   }
 }
-/**
- * カテゴリ取得
- * @param categoryId
- */
-// const getCategory = (categoryId: number): string => {
-//   const foundCategory = CATEGORIES.find(
-//     (category) => category.id === categoryId
-//   )
-//   return foundCategory ? foundCategory.text : 'カテゴリなし'
-// }
 
 /**
  * パラメーターセット
- * @param categoryId
  * @param sortId
  */
-// const setParams = (categoryId: number, sortId: number) => {
+// const setParams = (sortId: number) => {
 //   router.push({
-//     query: { category: categoryId, sort: sortId }
+//     query: { sort: sortId }
 //   })
 // }
 
@@ -99,11 +72,6 @@ const openCreateRecommendDialog = () => {
  */
 // const getParams = () => {
 //   const params = route.query
-//   const foundCategory = CATEGORIES.find(
-//     (category) => category.id === Number(params.category)
-//   )
-//   selectedCategory.value = foundCategory ?? CATEGORIES[0]
-
 //   const foundSort = SORTS.find((sort) => sort.id === Number(params.sort))
 //   selectedSort.value = foundSort ?? SORTS[0]
 // }
@@ -189,16 +157,6 @@ getRecommends()
   <div>
     <!-- NOTE: 一旦コメントアウト -->
     <!-- <div class="my-4 d-flex item-operation">
-      <v-select
-        v-model="selectedCategory"
-        :items="CATEGORIES"
-        item-title="text"
-        class="px-2"
-        full-width
-        filled
-        label="Category"
-        return-object
-      />
       <v-select
         v-model="selectedSort"
         :items="SORTS"
@@ -305,7 +263,6 @@ getRecommends()
             >
               {{ `${getTimePeriod(recommend.created_at)}日前` }}
             </time>
-            <!-- <p>{{ getCategory(recommend.node.categoryId) }}</p> -->
             <v-btn
               v-show="recommend.isLiked"
               class="ml-auto"
