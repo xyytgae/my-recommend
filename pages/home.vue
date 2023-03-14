@@ -1,21 +1,16 @@
 <script setup lang="ts">
-import { useClientHandle } from '@urql/vue'
-import { useNuxtApp } from '#app'
+import { Skeleton } from 'vue-loading-skeleton'
+import 'vue-loading-skeleton/dist/style.css'
 import { Sort } from '~/types/index'
 import {
   GetRecommendsData,
   useRecommend,
   DataManagement
 } from '~/apis/recommend'
-import { ref, useRuntimeConfig, computed, useSupabaseUser } from '#imports'
-import {
-  CreateLikeMutationVariables,
-  DeleteLikeMutationVariables
-} from '~/src/gql/graphql'
+import { ref, computed, useSupabaseUser } from '#imports'
 import { isOpenedCreateRecommendDialog } from '~~/fragments/CreateRecommendDialog.vue'
 import { isOpenedLoginDialog } from '~~/fragments/LoginDialog.vue'
 import { useUserStore } from '~/store/user'
-import { CreateLike, DeleteLike } from '~/graphql/like'
 
 const SORTS: Readonly<Sort[]> = [
   { text: '新着順', order: { ascending: false }, column: 'created_at' },
@@ -26,16 +21,14 @@ const SORTS: Readonly<Sort[]> = [
 // const route = useRoute()
 // const router = useRouter()
 const { getList } = useRecommend
-const config = useRuntimeConfig()
 const store = useUserStore()
-const { useMutation } = useClientHandle()
-const { $dayjs } = useNuxtApp()
 
 const recommends = ref<GetRecommendsData>([])
 
 // NOTE: reactiveだとバグる
 const selectedSort = ref<Sort>(SORTS[0])
 const filteredWord = ref<string>('')
+const isFetched = ref(false)
 
 const currentUserId = computed(() => store.getterUserId)
 const dataManagement = computed<DataManagement>(() => ({
@@ -76,68 +69,13 @@ const openCreateRecommendDialog = () => {
 //   selectedSort.value = foundSort ?? SORTS[0]
 // }
 
-const handleLike = async (recommendId: GetRecommendsData[0]['id']) => {
-  try {
-    const objects: CreateLikeMutationVariables['objects'] = {
-      recommendId,
-      userId: currentUserId.value
-    }
-
-    const { error } = await useMutation(CreateLike).executeMutation({
-      objects
-    })
-    if (error) throw error
-
-    // NOTE: 実行結果をクライアントサイドに反映
-    const index = recommends.value.findIndex((rec) => rec.id === recommendId)
-    const count = recommends.value[index]._likes_count as number
-    recommends.value[index]._likes_count = count + 1
-    recommends.value[index].isLiked = true
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-const cancelLike = async (recommendId: GetRecommendsData[0]['id']) => {
-  try {
-    const filter: DeleteLikeMutationVariables['filter'] = {
-      recommendId: {
-        eq: recommendId
-      },
-      userId: {
-        eq: currentUserId.value
-      }
-    }
-    const { error } = await useMutation(DeleteLike).executeMutation({
-      filter
-    })
-    if (error) throw error
-
-    // NOTE: 実行結果をクライアントサイドに反映
-    const index = recommends.value.findIndex((rec) => rec.id === recommendId)
-    const count = recommends.value[index]._likes_count as number
-    recommends.value[index]._likes_count = count - 1
-    recommends.value[index].isLiked = false
-  } catch (error) {
-    console.error(error)
-  }
-}
-
-/**
- * ◯日前取得
- * @param createdAt
- */
-const getTimePeriod = (createdAt: GetRecommendsData[0]['created_at']) => {
-  const today = $dayjs()
-  return today.diff(createdAt, 'day')
-}
-
 const getRecommends = () => {
   // TODO: 修正
   // https://github.com/xyytgae/my-recommend/issues/40
   const userId = useSupabaseUser().value?.id
   getList(dataManagement.value, userId).then((result) => {
     recommends.value = result.data as GetRecommendsData
+    isFetched.value = true
   })
 }
 
@@ -196,95 +134,22 @@ getRecommends()
       >
     </div>
 
-    <div>
-      <div v-if="recommends.length <= 0">まだ投稿されていません</div>
-      <div
-        v-for="recommend in recommends"
-        :key="recommend.id"
-        class="recommend my-8 mx-auto"
-      >
-        <template v-if="recommend">
-          <div
-            v-for="(image, index) in recommend.images"
-            :key="index"
-            class="display-image mx-auto"
-          >
-            <!-- TODO: 型エラーを修正する -->
-            <!-- https://github.com/xyytgae/my-recommend/issues/41 -->
-            <img
-              v-if="image"
-              class="recommend-image"
-              :src="config.public.supabaseStorageUrl + image.url"
-            />
+    <div v-if="isFetched && recommends.length <= 0">まだ投稿されていません</div>
+    <RecommendCard
+      v-for="(recommend, index) in recommends"
+      :key="recommend.id"
+      v-model:recommend="recommends[index]"
+      class="my-8 mx-auto"
+    />
 
-            <template v-if="image.hashtags && image.hashtags.length > 0">
-              <div
-                v-for="(hashtag, hashtagIndex) in image.hashtags"
-                :key="hashtagIndex"
-                :style="{ left: hashtag.x, top: hashtag.y }"
-                class="hashtag px-2 py-1"
-              >
-                {{ `#${hashtag.text}` }}
-              </div>
-            </template>
-          </div>
-        </template>
-        <!-- <v-carousel
-          v-if="
-            recommend.node.imagesCollection &&
-            recommend.node.imagesCollection.edges.length >= 0
-          "
-          hide-delimiters
-          height=""
-          class="carousel-image"
-        >
-          <v-carousel-item
-            v-for="(image, index) in recommend.node.imagesCollection.edges"
-            :key="index"
-            src="image"
+    <div v-show="!isFetched">
+      <div class="recommend my-8 mx-auto text-center">
+        <Skeleton height="480px" />
+        <div class="mt-12 mb-4">
+          <Skeleton
+            height="20px"
+            width="90%"
           />
-        </v-carousel> -->
-
-        <div class="text-contents pa-4">
-          <!-- <nuxt-link
-            :to="`/${recommend.node.userId}/status/${recommend.node.id}`"
-            class="text-decoration-none d-flex"
-          >
-            <h3>{{ recommend.node.title }}</h3>
-          </nuxt-link>
-          <p>{{ recommend.node.detail }}</p> -->
-          <div class="d-flex mt-8">
-            <time
-              class="text-caption my-auto"
-              :datetime="recommend.created_at"
-              :title="
-                $dayjs(recommend.created_at).tz().format('YYYY/MM/DD HH:mm')
-              "
-            >
-              {{ `${getTimePeriod(recommend.created_at)}日前` }}
-            </time>
-            <v-btn
-              v-show="recommend.isLiked"
-              class="ml-auto"
-              variant="text"
-              size="small"
-              icon
-              @click="cancelLike(recommend.id)"
-            >
-              <v-icon color="red">mdi-heart</v-icon>
-            </v-btn>
-            <v-btn
-              v-show="!recommend.isLiked"
-              class="ml-auto"
-              variant="text"
-              size="small"
-              icon
-              @click="handleLike(recommend.id)"
-            >
-              <v-icon color="grey">mdi-heart</v-icon>
-            </v-btn>
-            <span class="my-auto">{{ recommend._likes_count }}</span>
-          </div>
         </div>
       </div>
     </div>
@@ -305,19 +170,9 @@ getRecommends()
 </template>
 
 <style lang="scss" scoped>
-@import '~/assets/styles/recommend.scss';
-
-.carousel-image {
-  border-radius: 16px !important;
-}
 .recommend {
   border: 1px solid silver;
-  // border-radius: 16px;
   max-width: 480px;
-}
-
-.text-contents {
-  word-wrap: break-word;
 }
 
 .item-operation {
