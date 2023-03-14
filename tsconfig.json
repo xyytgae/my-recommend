@@ -12,7 +12,8 @@
     "noEmit": true,
     "experimentalDecorators": true,
     "baseUrl": ".",
-    "noErrorTruncation": true
+    "noErrorTruncation": true,
+    "strictFunctionTypes": false
     // NOTE: 上書きしてしまうため不要
     // "paths": {
     //   "~/*": ["./*"],
