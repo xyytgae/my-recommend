@@ -62,6 +62,57 @@ $ yarn supabase:types
 ```
 
 
+## ER図
+
+```mermaid
+erDiagram
+  users {
+    uuid id PK
+    timestamp updated_at
+    text user_name
+    text name
+    text avatar_url
+    text twitter_url
+    text instagram_url
+    text email
+  }
+
+  recommends {
+    uuid id PK
+    timestamp created_at
+    uuid user_id FK
+  }
+
+  images {
+    uuid id PK
+    timestamp created_at
+    varchar(2083) url
+    uuid recommend_id FK
+  }
+
+  hashtags {
+    uuid id PK
+    timestamp created_at
+    text text
+    varchar(8) x
+    varchar(8) y
+    uuid image_id FK
+  }
+
+  likes {
+    uuid id PK
+    timestamp created_at
+    uuid user_id FK
+    uuid recommend_id FK
+  }
+
+  users ||--o{ recommends : "1人のユーザーは0以上の投稿を持つ"
+  users ||--o{ likes : "1人のユーザーは0以上のいいねを持つ"
+  recommends ||--|{ images : "1つの投稿は1つ以上の画像を持つ"
+  images ||--o{ hashtags : "1つの画像は0以上のハッシュタグを持つ"
+  recommends ||--o{ likes : "1つの投稿は0以上のいいねを持つ"
+```
+
 ## ディレクトリ構成
 
 ```
