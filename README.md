@@ -1,68 +1,88 @@
-# my-recommend
+# My recommend
 
-## Build Setup
+## 概要
+
+Instagramを写真を共有するアプリケーションです。  
+Instagramにあるような写真投稿、いいね、検索機能に加えて、ソートやハッシュタッグを写真上に表示する機能があります。
+
+![スクリーンショット 2023-03-14 213704](https://user-images.githubusercontent.com/51901346/225003459-e14405bf-7cb0-40e9-99c2-c1874339c7ed.png)
+![スクリーンショット 2023-03-14 213801](https://user-images.githubusercontent.com/51901346/225003465-57acbbdd-f677-40c8-8fbc-00e42bb8f534.png)
+![スクリーンショット 2023-03-14 213818](https://user-images.githubusercontent.com/51901346/225003473-94003961-3f4c-40c6-afcd-7463e8d48094.png)
+
+- 検索、ソート  
+
+https://user-images.githubusercontent.com/51901346/225002538-6d0a45b8-2453-4a46-873c-e5d8533ca46a.mp4
+
+- 写真投稿
+
+https://user-images.githubusercontent.com/51901346/225002575-3ab753a9-d995-4ec3-955b-40b7b5d91995.mp4
+
+
+## 機能一覧
+- 写真、ハッシュタグ投稿
+- いいね
+- 検索
+- ソート
+
+## 実装予定機能
+- 複数写真投稿
+- 編集
+- 削除
+- ハッシュタグカラー変更
+
+## 環境構築
 
 ```bash
-# install dependencies
-$ yarn install
+# クローン
+$ git clone https://github.com/xyytgae/my-recommend.git
 
-# serve with hot reload at localhost:3000
+# パッケージインストール
+$ yarn
+
+# localhost:3000でサーバー立ち上げ
 $ yarn dev
-
-# build for production and launch server
-$ yarn build
-$ yarn start
-
-# generate static project
-$ yarn generate
 ```
 
-For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
+## 技術
+- Nuxt.js
+- Vuetify.js
+- Supabase
+- GraphQL
 
-## Special Directories
+## 開発中によく使うコマンド
+```bash
+# git czを使用しgit commitを行う
+$ yarn commit
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+# GraphQLの型を生成
+$ yarn codegen
 
-### `assets`
+# Supabaseから型を生成
+$ yarn supabase:types
+```
 
-The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
 
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
+## ディレクトリ構成
 
-### `components`
+```
+.
+├─apis // コントローラー
+├─assets
+├─components  // 使い回すコンポーネント
+├─config  // envファイル
+├─fragments  // apiに直接アクセス可能な使い回さないコンポーネント
+├─graphql  // GraphQLのquery、mutation
+├─layouts
+├─middleware
+├─modules  // 共通関数
+├─pages
+├─plugins
+├─public
+│  └─images
+├─sql  // セットアップSQL
+├─src
+│  └─gql  // 自動生成したGraphQLの型
+├─store  // 状態管理
+└─types  // 手動で作成した型、自動生成したSupabaseの型
 
-The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
-
-### `layouts`
-
-Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
-
-### `pages`
-
-This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
-
-### `plugins`
-
-The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
-
-### `static`
-
-This directory contains your static files. Each file inside this directory is mapped to `/`.
-
-Example: `/static/robots.txt` is mapped as `/robots.txt`.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
-
-### `store`
-
-This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
-
-More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
+```
